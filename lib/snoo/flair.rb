@@ -2,7 +2,7 @@ module Snoo
   class Snoo
 
     # Clear all the flair templates of a particular type
-    # 
+    #
     # @param type [USER_FLAIR, LINK_FLAIR] The type of template to clear.
     # @param subreddit [String] The subreddit targeted.
     # @return [HTTParty::request] The request object
@@ -14,7 +14,7 @@ module Snoo
     end
 
     # Deletes a user's flair
-    # 
+    #
     # @param user [String] The user who'se flair is affected
     # @param subreddit [String] The subreddit targeted.
     # @return (see #clear_flair_templates)
@@ -24,7 +24,7 @@ module Snoo
     end
 
     # Deletes a flair template by ID.
-    # 
+    #
     # @param id [String] The flair template's ID to delete. Get this from {#flair_template_list}
     # @param subreddit [String] The subreddit targeted.
     def delete_flair_template id, subreddit
@@ -33,7 +33,7 @@ module Snoo
     end
 
     # Sets flair on a thing, currently supports links and users. Must specify *either* link *or* user, *not* both
-    # 
+    #
     # @param css_class [String] The class(es) applied to the flair. Whitespace separated
     # @param link [String] The thing id of the link (if a link). Begins with `t3_`
     # @param name [String] The user who we are flairing. This requires a username.
@@ -55,12 +55,12 @@ module Snoo
     end
 
     # Configures flair options for a subreddit. All options are required
-    # 
-    # @params enabled [true, false] Flair enabled?
-    # @params position [left, right] Position of user flair.
-    # @params self_assign [true, false] Allow users to assign their own flair from templates
-    # @params link_position [none, left, right] The position of link flair. Set to `none` to disable
-    # @params link_assign [true, false] Allow a submitter to assign their own link flair
+    #
+    # @param enabled [true, false] Flair enabled?
+    # @param position [left, right] Position of user flair.
+    # @param self_assign [true, false] Allow users to assign their own flair from templates
+    # @param link_position [none, left, right] The position of link flair. Set to `none` to disable
+    # @param link_assign [true, false] Allow a submitter to assign their own link flair
     # @param subreddit [String] The subreddit targeted.
     # @return (see #clear_flair_templates)
     def flair_config enabled, position, self_assign, link_position, link_assign, subreddit
@@ -83,8 +83,8 @@ module Snoo
     end
 
     # Post flair in a CSV file to reddit
-    # 
-    # @params csv [String] A string, in CSV format, of `user,flair-text,css_class` per line, with no more than 100 flairs, and **no header line**.
+    #
+    # @param csv [String] A string, in CSV format, of `user,flair-text,css_class` per line, with no more than 100 flairs, and **no header line**.
     # @param subreddit [String] The subreddit targeted.
     # @return [HTTParty::request] The request object. Note that this request object contains a json confirming the status of each line of the CSV
     def flair_csv csv, subreddit
@@ -95,7 +95,7 @@ module Snoo
     # @todo Figure out all the params, and why it is 403ing when run in pry
     # Downloads flair from the subreddit
     # This is limited to 1000 per request, use before/after to get "pages"
-    # 
+    #
     # @param limit [Fixnum] The amount of flairs to get. Must be between 1 and 1000
     # @param before [String] Return entries just before this user id
     # @param after [String] Return entries just after this user id
@@ -115,7 +115,7 @@ module Snoo
     end
 
     # Create or edit a flair template.
-    # 
+    #
     # @param css_class [String] The list of css classes applied to this style, space separated
     # @param template_id [String] The flair template ID. Get this from {#flair_template_list}
     # @param type [USER_FLAIR, LINK_FLAIR] The type of flair template.
@@ -143,10 +143,10 @@ module Snoo
     end
 
     # Select a flair template and apply it to a user or link
-    # 
+    #
     # @param template_id [String] The template id to apply. Get this from {#flair_template_list}
     # @param link [String] The link id to apply to
-    # @param name [String] The username to apply flair to
+    # @param user [String] The username to apply flair to
     # @param text [String] The flair text
     # @param subreddit [String] The subreddit targeted.
     # @return (see #clear_flair_templates)
@@ -165,7 +165,7 @@ module Snoo
     end
 
     # Toggle flair on and off for a subreddit
-    # 
+    #
     # @param enabled [true, false] Enable/disable flair
     # @param subreddit [String] The subreddit targeted.
     # @return (see #clear_flair_templates)
