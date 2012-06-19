@@ -6,6 +6,7 @@ require "snoo/account"
 require "snoo/flair"
 require "snoo/links_comments"
 require "snoo/listing"
+require "snoo/pms"
 
 module Snoo
   class Snoo
