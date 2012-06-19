@@ -3,11 +3,13 @@ module Snoo
 
     # Clear all the flair templates of a particular type
     # 
-    # @param type [String] The type of template to clear. One of `USER_FLAIR` or `LINK_FLAIR`
+    # @param type [USER_FLAIR, LINK_FLAIR] The type of template to clear.
     # @param subreddit [String] The subreddit targeted.
     # @return [HTTParty::request] The request object
     def clear_flair_templates type, subreddit
       logged_in?
+      tests = ['USER_FLAIR', 'LINK_FLAIR']
+      raise 'parameter error: type needs to be either USER_FLAIR or LINK_FLAIR' unless tests.include?(type)
       self.class.post('/api/clearflairtemplates', body: { flair_type: type, r: subreddit, uh: @modhash})
     end
 
@@ -86,9 +88,11 @@ module Snoo
     # @param subreddit [String] The subreddit targeted.
     # @return [HTTParty::request] The request object. Note that this request object contains a json confirming the status of each line of the CSV
     def flair_csv csv, subreddit
+      logged_in?
       self.class.post('/api/flaircsv.json', body: {flair_csv: csv, r: subreddit, uh: @modhash})
     end
 
+    # @todo Figure out all the params, and why it is 403ing when run in pry
     # Downloads flair from the subreddit
     # This is limited to 1000 per request, use before/after to get "pages"
     # 
@@ -98,6 +102,7 @@ module Snoo
     # @param subreddit [String] The subreddit targeted.
     # @return (see #clear_flair_templates)
     def get_flair_list limit = 1000, before = nil, after = nil, subreddit
+      logged_in?
       raise 'parameter error: limit is too high/low' unless (1..1000).include?(limit)
       query = {
         r: subreddit,
@@ -109,7 +114,67 @@ module Snoo
       self.class.get('/api/flairlist.json', query: query)
     end
 
-    
+    # Create or edit a flair template.
+    # 
+    # @param css_class [String] The list of css classes applied to this style, space separated
+    # @param template_id [String] The flair template ID. Get this from {#flair_template_list}
+    # @param type [USER_FLAIR, LINK_FLAIR] The type of flair template.
+    # @param text [String] The flair template's text.
+    # @param user_editable [true, false] If the template allows users to specify their own text
+    # @param subreddit [String] The subreddit targeted.
+    # @return (see #clear_flair_templates)
+    def flair_template css_class, template_id = nil, type, text, user_editable, subreddit
+      logged_in?
+      test = ['USER_FLAIR', 'LINK_FLAIR']
+      raise 'parameter error: type is either USER_FLAIR or LINK_FLAIR' unless test.include?(type)
+      test = [true, false]
+      raise 'parameter error: user_editable needs to be true or false' unless test.include?(user_editable)
+
+      params = {
+        css_class: css_class,
+        flair_type: type,
+        text: text,
+        text_editable: user_editable,
+        uh: @modhash,
+        r: subreddit
+      }
+      params[:flair_template_id] = template_id if template_id
+      self.class.post('/api/flairtemplate', body: params)
+    end
+
+    # Select a flair template and apply it to a user or link
+    # 
+    # @param template_id [String] The template id to apply. Get this from {#flair_template_list}
+    # @param link [String] The link id to apply to
+    # @param name [String] The username to apply flair to
+    # @param text [String] The flair text
+    # @param subreddit [String] The subreddit targeted.
+    # @return (see #clear_flair_templates)
+    def select_flair_template template_id, link = nil, user = nil, text, subreddit
+      logged_in?
+      raise 'parameter error: link or user, not both' if link && user
+      params = {
+        flair_template_id: template_id,
+        text: text,
+        uh: @modhash,
+        r: subreddit
+      }
+      params[:link] = link if link
+      params[:user] = user if user
+      self.class.post('/api/selectflair', body: params)
+    end
+
+    # Toggle flair on and off for a subreddit
+    # 
+    # @param enabled [true, false] Enable/disable flair
+    # @param subreddit [String] The subreddit targeted.
+    # @return (see #clear_flair_templates)
+    def flair_toggle enabled, subreddit
+      logged_in?
+      test = [true, false]
+      raise 'parameter error: enabled must be boolean' unless test.include?(enabled)
+      self.class.post('/api/setflairenabled', body: {flair_enabled: enabled, uh: @modhash, r: subreddit})
+    end
 
     # @todo implement this.
     #   it will probably require nokogiri and some trickery.
