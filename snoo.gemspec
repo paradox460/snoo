@@ -15,5 +15,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Snoo::VERSION
 
-  gem.add_runtime_dependency 'httparty'
+  ['httparty'].each do |dependency|
+    gem.add_runtime_dependency dependency
+  end
 end
