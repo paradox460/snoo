@@ -3,6 +3,8 @@ require 'httparty'
 require "snoo/version"
 require "snoo/utilities"
 require "snoo/account"
+require "snoo/flair"
+require "snoo/links_comments"
 
 module Snoo
   class Snoo
