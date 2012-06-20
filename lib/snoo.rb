@@ -27,9 +27,9 @@ module Snoo
     # @param useragent [String] The User-Agent this bot will use.
     def initialize( url = "http://www.reddit.com", useragent = "Snoo ruby reddit api wrapper v#{VERSION}" )
       @baseurl = url
-      @headers[:useragent] = useragent
-      base_uri url
-      headers 'User-Agent' => useragent
+      self.class.base_uri url
+      @headers = {useragent: useragent }
+      self.class.headers 'User-Agent' => useragent
     end
   end
 end
