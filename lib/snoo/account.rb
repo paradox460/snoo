@@ -6,6 +6,7 @@ module Snoo
     #
     # @param username [String] The reddit account's username you wish to log in as
     # @param password [String] The password of the reddit account
+    # @return [HTTParty::Response] The httparty request object.
     def log_in username, password
       login = self.class.post("/api/login", :body => {user: username, passwd: password, api_type: 'json'})
       errors = login['json']['errors']
@@ -13,7 +14,8 @@ module Snoo
       cookies login.headers['set-cookie']
       @modhash = login['json']['data']['modhash']
       @username = username
-      @userid = 't2_' + self.class.post('/api/me.json')['data']['id']
+      @userid = 't2_' + self.class.get('/api/me.json')['data']['id']
+      return login
     end
 
     # Logs out of a reddit account. This is usually uneeded, you can just log_in as a new account to replace the current one.
@@ -29,7 +31,7 @@ module Snoo
     #
     # @note This method provides no verification or checking, so use with care
     # @param password [String] The password of the reddit account
-    # @return [HTTParty::Response] The httparty request object.
+    # @return (see #log_in)
     def clear_sessions password
       logged_in?
       clear = self.class.post('/api/clear_sessions', body: { curpass: password, dest: @baseurl, uh: @modhash })
