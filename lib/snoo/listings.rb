@@ -68,14 +68,15 @@ module Snoo
     # @param subreddit [String] The calling subreddit.
     # @param limit [1..100] The amount of results to return
     # @param before [String] Return things *before* this id
-    # @params after [String] Return things *after* this id
-    # @params sort [relevance, new, top] The sorting of the results.
-    # @params syntax [cloudsearch, lucene] The search syntax. Defaults to lucene
+    # @param after [String] Return things *after* this id
+    # @param sort [relevance, new, top] The sorting of the results.
+    # @param syntax [cloudsearch, lucene] The search syntax. Defaults to lucene
     # @return (see #clear_sessions)
-    def search query, restrict_subreddit = false, subreddit = nil, limit = nil, before = nil, after = nil, sort = nil
+    def search query, restrict_subreddit = false, subreddit = nil, limit = nil, before = nil, after = nil, sort = nil, syntax = 'lucene'
       raise 'parameter error: restrict_subreddit needs to be boolean' unless [true, false].include?(restrict_subreddit)
       raise "parameter error: limit needs to be 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
       raise "parameter error: sort needs to be one of relevance, new, top, is #{sort}" unless %w{relevance new top}.include?(sort) or sort.nil?
+      raise "parameter error: syntax needs to be one of cloudsearch, lucene; is #{syntax}" if %w{cloudsearch lucene}.include?(syntax)
 
       # This supports searches with and without a subreddit
       url = "%s/search.json" % (subreddit if subreddit)
@@ -89,6 +90,7 @@ module Snoo
       httpquery[:before] = before if before
       httpquery[:after] = after if after
       httpquery[:sort] = sort if sort
+      httpquery[:syntax] = syntax if syntax != 'lucene'
 
       self.class.get(url, query: httpquery)
     end

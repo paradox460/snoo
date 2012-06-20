@@ -17,13 +17,13 @@ module Snoo
 
       # Posts to '/api/friend'. This method exists because there are tons of things that use this
       #
+      # @param api_type [friend, moderator, contributor, banned] Type of action to use. All but friend target subreddits
       # @param api_container [String] Thing ID, either subreddit (t5_) or user adding friend (t2_)
       # @param api_name [String] Username to add
       # @param api_note [String] Note to leave. Requires reddit gold
-      # @param api_type [friend, moderator, contributor, banned] Type of action to use. All but friend target subreddits
       # @param api_subreddit [String] Subreddit name
       # @return [HTTParty::Response] The response object.
-      def friend_wrapper api_container = nil , api_name = nil, api_note = nil, api_type, api_subreddit = nil
+      def friend_wrapper api_type, api_container = nil, api_name = nil, api_note = nil, api_subreddit = nil
         logged_in?
         params = {type: api_type, uh: @modhash}
         params[:container] = api_container if api_container
@@ -35,13 +35,13 @@ module Snoo
 
       # Posts to '/api/unfriend'. This method exists because there are a ton of things that use this.
       #
+      # @param api_type [friend, enemy, moderator, contributor, banned] Type of removal
       # @param api_container [String] Thing ID, either subreddit (t5_) or user adding friend (t2_)
       # @param api_name [String] User name
       # @param api_id [String] User ID of user being removed
-      # @param api_type [friend, enemy, moderator, contributor, banned]
-      # @param api_subreddit [String] Subreddit name/
+      # @param api_subreddit [String] Subreddit name
       # @return (see #friend_wrapper)
-      def unfriend_wrapper api_container = nil, api_name = nil, api_id = nil, api_type, api_subreddit = nil
+      def unfriend_wrapper api_type, api_container = nil, api_name = nil, api_id = nil, api_subreddit = nil
         logged_in?
         params = { type: api_type, uh: @modhash}
         params[:container] = api_container if api_container
@@ -50,5 +50,5 @@ module Snoo
         params[:r] = api_subreddit if api_subreddit
         self.class.post('/api/unfriend', body: params)
       end
-  end3
+  end
 end

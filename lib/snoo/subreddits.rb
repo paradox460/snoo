@@ -82,7 +82,7 @@ module Snoo
     #
     # @param (see #delete_header)
     # @return (see #clear_sessions)
-    def subreddit_info subreddit,
+    def subreddit_info subreddit
       self.class.get("/r/#{subreddit}/about.json")
     end
 

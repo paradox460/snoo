@@ -6,9 +6,18 @@ require "snoo/account"
 require "snoo/flair"
 require "snoo/links_comments"
 require "snoo/listing"
+require "snoo/moderation"
 require "snoo/pms"
+require "snoo/subreddits"
+require "snoo/users"
 
+# Snoo reddit API wrapper
+#
+# @author Jeff Sandberg <paradox460@gmail.com>
 module Snoo
+  # Snoo reddit API wrapper
+  #
+  # @author Jeff Sandberg <paradox460@gmail.com>
   class Snoo
     include HTTParty
 

@@ -5,7 +5,7 @@ module Snoo
     # @param name [String] The username to target
     # @param note [String] A friend tag. Requires reddit gold.
     # @return (see #clear_sessions)
-    def friend name, friend_id note = nil
+    def friend name, friend_id, note = nil
       friend_wrapper(api_name = name, api_container = @userid, api_note = note, api_type = "friend")
     end
 
