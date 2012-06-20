@@ -44,7 +44,7 @@ module Snoo
 
     # Get a listing of things which have the provided URL.
     # You can use a plain url, or a reddit link id to get reposts of said link
-    # @note Using {#search} is probably better for url lookups
+    # @note Using {Listings#search} is probably better for url lookups
     # @note You do not have to be logged in to use this
     #
     # @param id [String] The id of a reddit thing to look up. Specify either this or a url, not both

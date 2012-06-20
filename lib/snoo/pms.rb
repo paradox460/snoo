@@ -14,7 +14,7 @@ module Snoo
     end
 
     # Send a private message
-    # To reply to PM, use {#comment}, with the PM id as the link id
+    # To reply to PM, use {LinksComments#comment}, with the PM id as the link id
     #
     # @param to [String] The username you are sending to
     # @param subject [String] The subject of the message
