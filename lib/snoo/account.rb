@@ -12,21 +12,23 @@ module Snoo
       setCookies login.headers['set-cookie']
       @modhash = login['json']['data']['modhash']
       @username = username
+      @userid = 't2_' + self.class.post('/api/me.json')['data']['id']
     end
 
     # Logs out of a reddit account. This is usually uneeded, you can just log_in as a new account to replace the current one.
     # This just nils the cookies and modhash
     def log_out
-       setCookies nil
+      setCookies nil
       @modhash = nil
+      @userid = nil
     end
 
     # Invalidates all other reddit session cookies, and updates the current one.
     # This will log out all other reddit clients, as described in the [reddit API](http://www.reddit.com/dev/api#POST_api_clear_sessions)
     #
-    # @note This provides absolutely no verification
+    # @note This method provides no verification or checking, so use with care
     # @param password [String] The password of the reddit account
-    # @return [HTTParty::Request] The httparty request object.
+    # @return [HTTParty::Response] The httparty request object.
     def clear_sessions password
       logged_in?
       clear = self.class.post('/api/clear_sessions', body: { curpass: password, dest: @baseurl, uh: @modhash })

@@ -5,7 +5,7 @@ module Snoo
     #
     # @param type [USER_FLAIR, LINK_FLAIR] The type of template to clear.
     # @param subreddit [String] The subreddit targeted.
-    # @return [HTTParty::request] The request object
+    # @return (see #clear_sessions)
     def clear_flair_templates type, subreddit
       logged_in?
       tests = ['USER_FLAIR', 'LINK_FLAIR']
@@ -17,7 +17,7 @@ module Snoo
     #
     # @param user [String] The user who'se flair is affected
     # @param subreddit [String] The subreddit targeted.
-    # @return (see #clear_flair_templates)
+    # @return (see #clear_sessions)
     def delete_user_flair user, subreddit
       logged_in?
       self.class.post('/api/deleteflair', body: {name: user, r: subreddit, uh: @modhash})
@@ -38,7 +38,7 @@ module Snoo
     # @param link [String] The thing id of the link (if a link). Begins with `t3_`
     # @param name [String] The user who we are flairing. This requires a username.
     # @param subreddit [String] The subreddit targeted.
-    # @return (see #clear_flair_templates)
+    # @return (see #clear_sessions)
     def flair css_class, link = nil, name = nil, text, subreddit
       logged_in?
       raise "parameter error: either link or name, not both" if link && name
@@ -62,7 +62,7 @@ module Snoo
     # @param link_position [none, left, right] The position of link flair. Set to `none` to disable
     # @param link_assign [true, false] Allow a submitter to assign their own link flair
     # @param subreddit [String] The subreddit targeted.
-    # @return (see #clear_flair_templates)
+    # @return (see #clear_sessions)
     def flair_config enabled, position, self_assign, link_position, link_assign, subreddit
       logged_in?
       # Test the params
@@ -86,13 +86,12 @@ module Snoo
     #
     # @param csv [String] A string, in CSV format, of `user,flair-text,css_class` per line, with no more than 100 flairs, and **no header line**.
     # @param subreddit [String] The subreddit targeted.
-    # @return [HTTParty::request] The request object. Note that this request object contains a json confirming the status of each line of the CSV
+    # @return [HTTParty::Response] The request object. Note that this request object contains a json confirming the status of each line of the CSV
     def flair_csv csv, subreddit
       logged_in?
       self.class.post('/api/flaircsv.json', body: {flair_csv: csv, r: subreddit, uh: @modhash})
     end
 
-    # @todo Figure out all the params, and why it is 403ing when run in pry
     # Downloads flair from the subreddit
     # This is limited to 1000 per request, use before/after to get "pages"
     #
@@ -100,18 +99,17 @@ module Snoo
     # @param before [String] Return entries just before this user id
     # @param after [String] Return entries just after this user id
     # @param subreddit [String] The subreddit targeted.
-    # @return (see #clear_flair_templates)
+    # @return (see #clear_sessions)
     def get_flair_list limit = 1000, before = nil, after = nil, subreddit
       logged_in?
       raise 'parameter error: limit is too high/low' unless (1..1000).include?(limit)
       query = {
-        r: subreddit,
         limit: limit,
         uh: @modhash
       }
       query[:before] = before if before
       query[:after] = after if after
-      self.class.get('/api/flairlist.json', query: query)
+      self.class.get("/r/#{subreddit}/api/flairlist.json", query: query)
     end
 
     # Create or edit a flair template.
@@ -122,7 +120,7 @@ module Snoo
     # @param text [String] The flair template's text.
     # @param user_editable [true, false] If the template allows users to specify their own text
     # @param subreddit [String] The subreddit targeted.
-    # @return (see #clear_flair_templates)
+    # @return (see #clear_sessions)
     def flair_template css_class, template_id = nil, type, text, user_editable, subreddit
       logged_in?
       test = ['USER_FLAIR', 'LINK_FLAIR']
@@ -149,7 +147,7 @@ module Snoo
     # @param user [String] The username to apply flair to
     # @param text [String] The flair text
     # @param subreddit [String] The subreddit targeted.
-    # @return (see #clear_flair_templates)
+    # @return (see #clear_sessions)
     def select_flair_template template_id, link = nil, user = nil, text, subreddit
       logged_in?
       raise 'parameter error: link or user, not both' if link && user
@@ -168,7 +166,7 @@ module Snoo
     #
     # @param enabled [true, false] Enable/disable flair
     # @param subreddit [String] The subreddit targeted.
-    # @return (see #clear_flair_templates)
+    # @return (see #clear_sessions)
     def flair_toggle enabled, subreddit
       logged_in?
       test = [true, false]

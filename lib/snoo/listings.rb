@@ -8,7 +8,7 @@ module Snoo
     # @param limit [Fixnum] The total number of comments to return. If you have gold this can include the whole thread, but is buggy. Recommend no more than 1000
     # @param depth [Fixnum] How deep to render a comment thread.
     # @param sort [old, new, hot, top, controversial, best] The sort used.
-    # @return [HTTParty::request] The request object
+    # @return (see #clear_sessions)
     def get_comments link_id, comment_id = nil, context = nil, limit = 100, depth = nil, sort = nil
       sorts = %w{old new hot top controversial best}
       raise "parameter error: sort cannot be #{sort}" unless sorts.include?(sort) or sort.nil?
@@ -30,7 +30,7 @@ module Snoo
     # @param limit [1..100] The number of things to return.
     # @param after [String] Get things *after* this thing id
     # @param before [String] Get things *before* this thing id
-    # @return (see #get_comments)
+    # @return (see #clear_sessions)
     def get_listing subreddit = nil, page = nil, sort = nil, time = nil, limit = nil, after = nil, before = nil
       pages = %w{new controversial top}
       sorts = %w{new rising}
@@ -59,6 +59,38 @@ module Snoo
 
       # Make the request
       self.class.get(url, query: query)
+    end
+
+    # Search reddit
+    #
+    # @param query [String] The search query.
+    # @param restrict_subreddit [true, false] Restrict to the calling subreddit
+    # @param subreddit [String] The calling subreddit.
+    # @param limit [1..100] The amount of results to return
+    # @param before [String] Return things *before* this id
+    # @params after [String] Return things *after* this id
+    # @params sort [relevance, new, top] The sorting of the results.
+    # @params syntax [cloudsearch, lucene] The search syntax. Defaults to lucene
+    # @return (see #clear_sessions)
+    def search query, restrict_subreddit = false, subreddit = nil, limit = nil, before = nil, after = nil, sort = nil
+      raise 'parameter error: restrict_subreddit needs to be boolean' unless [true, false].include?(restrict_subreddit)
+      raise "parameter error: limit needs to be 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise "parameter error: sort needs to be one of relevance, new, top, is #{sort}" unless %w{relevance new top}.include?(sort) or sort.nil?
+
+      # This supports searches with and without a subreddit
+      url = "%s/search.json" % (subreddit if subreddit)
+
+      # Construct the query
+      httpquery = {
+        q: query
+      }
+      httpquery[:restrict_sr] = (restrict_subreddit ? "on" : "off")
+      httpquery[:limit] = limit if limit
+      httpquery[:before] = before if before
+      httpquery[:after] = after if after
+      httpquery[:sort] = sort if sort
+
+      self.class.get(url, query: httpquery)
     end
   end
 end
