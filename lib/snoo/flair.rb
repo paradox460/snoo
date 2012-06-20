@@ -14,7 +14,7 @@ module Snoo
       logged_in?
       tests = ['USER_FLAIR', 'LINK_FLAIR']
       raise 'parameter error: type needs to be either USER_FLAIR or LINK_FLAIR' unless tests.include?(type)
-      self.class.post('/api/clearflairtemplates', body: { flair_type: type, r: subreddit, uh: @modhash})
+      post('/api/clearflairtemplates', body: { flair_type: type, r: subreddit, uh: @modhash})
     end
 
     # Deletes a user's flair
@@ -24,7 +24,7 @@ module Snoo
     # @return (see #clear_sessions)
     def delete_user_flair user, subreddit
       logged_in?
-      self.class.post('/api/deleteflair', body: {name: user, r: subreddit, uh: @modhash})
+      post('/api/deleteflair', body: {name: user, r: subreddit, uh: @modhash})
     end
 
     # Deletes a flair template by ID.
@@ -33,7 +33,7 @@ module Snoo
     # @param subreddit [String] The subreddit targeted.
     def delete_flair_template id, subreddit
       logged_in?
-      self.class.post('/api/deleteflairtemplate', body: {flair_template_id: id, r: subreddit, uh: @modhash})
+      post('/api/deleteflairtemplate', body: {flair_template_id: id, r: subreddit, uh: @modhash})
     end
 
     # Sets flair on a thing, currently supports links and users. Must specify *either* link *or* user, *not* both
@@ -56,7 +56,7 @@ module Snoo
       params[:name] = name if name
       params[:link] = link if link
 
-      self.class.post('/api/flair', body: params)
+      post('/api/flair', body: params)
     end
 
     # Configures flair options for a subreddit. All options are required
@@ -76,7 +76,7 @@ module Snoo
       tests << "none"
       raise "parameter error" unless tests.include?(link_position)
 
-      self.class.post('/api/flairconfig', body: {
+      post('/api/flairconfig', body: {
         flair_enabled: enabled,
         flair_position: position,
         flair_self_assign_enabled: self_assign,
@@ -94,7 +94,7 @@ module Snoo
     # @return [HTTParty::Response] The request object. Note that this request object contains a json confirming the status of each line of the CSV
     def flair_csv csv, subreddit
       logged_in?
-      self.class.post('/api/flaircsv.json', body: {flair_csv: csv, r: subreddit, uh: @modhash})
+      post('/api/flaircsv.json', body: {flair_csv: csv, r: subreddit, uh: @modhash})
     end
 
     # Downloads flair from the subreddit
@@ -114,7 +114,7 @@ module Snoo
       }
       query[:before] = before if before
       query[:after] = after if after
-      self.class.get("/r/#{subreddit}/api/flairlist.json", query: query)
+      get("/r/#{subreddit}/api/flairlist.json", query: query)
     end
 
     # Create or edit a flair template.
@@ -142,7 +142,7 @@ module Snoo
         r: subreddit
       }
       params[:flair_template_id] = template_id if template_id
-      self.class.post('/api/flairtemplate', body: params)
+      post('/api/flairtemplate', body: params)
     end
 
     # Select a flair template and apply it to a user or link
@@ -164,7 +164,7 @@ module Snoo
       }
       params[:link] = link if link
       params[:user] = user if user
-      self.class.post('/api/selectflair', body: params)
+      post('/api/selectflair', body: params)
     end
 
     # Toggle flair on and off for a subreddit
@@ -176,7 +176,7 @@ module Snoo
       logged_in?
       test = [true, false]
       raise 'parameter error: enabled must be boolean' unless test.include?(enabled)
-      self.class.post('/api/setflairenabled', body: {flair_enabled: enabled, uh: @modhash, r: subreddit})
+      post('/api/setflairenabled', body: {flair_enabled: enabled, uh: @modhash, r: subreddit})
     end
 
     # @todo implement this.

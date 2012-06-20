@@ -10,7 +10,7 @@ module Snoo
     # @return (see #clear_sessions)
     def block_pm id
       logged_in?
-      self.class.post('/api/block', body: {id: id, uh: @modhash})
+      post('/api/block', body: {id: id, uh: @modhash})
     end
 
     # Send a private message
@@ -22,7 +22,7 @@ module Snoo
     # @return (see #clear_sessions)
     def send_pm to, subject, text
       logged_in?
-      self.class.post('/api/compose.json', body: {to: to, subject: subject, text: text, uh: @modhash})
+      post('/api/compose.json', body: {to: to, subject: subject, text: text, uh: @modhash})
     end
 
     # Mark a PM as read
@@ -31,7 +31,7 @@ module Snoo
     # @return (see #clear_sessions)
     def mark_read id
       logged_in?
-      self.class.post('/api/read_message', body: {id: id, uh: @modhash})
+      post('/api/read_message', body: {id: id, uh: @modhash})
     end
 
     # Mark a PM as unread
@@ -40,7 +40,7 @@ module Snoo
     # @return (see #clear_sessions)
     def mark_unread id
       logged_in?
-      self.class.post('/api/unread_message', body: {id: id, uh: @modhash})
+      post('/api/unread_message', body: {id: id, uh: @modhash})
     end
 
     # Gets a listing of PMs
@@ -63,7 +63,7 @@ module Snoo
       query[:limit] = limit if limit
       query[:before] = before if before
       query[:after] = after if after
-      self.class.get("/message/#{where}.json", query: query)
+      get("/message/#{where}.json", query: query)
     end
   end
 end

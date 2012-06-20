@@ -10,7 +10,7 @@ module Snoo
     # @return (see #clear_sessions)
     def delete_header subreddit
       logged_in?
-      self.class.post('/api/delete_sr_header', body: {r: subreddit, uh: @modhash})
+      post('/api/delete_sr_header', body: {r: subreddit, uh: @modhash})
     end
 
     # Deletes an image from a subreddit. This is for css, not removing posts
@@ -20,7 +20,7 @@ module Snoo
     # @return (see #clear_sessions)
     def delete_image subreddit, image_name
       logged_in?
-      self.class.post('/api/delete_sr_image', body: {r: subreddit, img_name: image_name, uh: @modhash})
+      post('/api/delete_sr_image', body: {r: subreddit, img_name: image_name, uh: @modhash})
     end
 
     # @todo test if every param is actually required
@@ -48,7 +48,7 @@ module Snoo
       raise "parameter error: show_media must be boolean" unless bool.include?(show_media)
       raise "parameter error: adult must be boolean" unless bool.include?(adult)
       params = {title: title, description: sidebar, public_description: description, lang: lang, type: type, link_type: post_type, allow_top: allow_frontpage, show_media: show_media, "header-title" => header, r: subreddit, uh: @modhash}
-      self.class.post('/api/site_admin', body: params)
+      post('/api/site_admin', body: params)
     end
 
     # Set the subreddit stylesheet
@@ -58,7 +58,7 @@ module Snoo
     # @return (see #clear_sessions)
     def set_stylesheet stylesheet, subreddit
       logged_in?
-      self.class.post('/api/subreddit_stylesheet', body: {op: "save", stylesheet_contents: stylesheet, uh: @modhash})
+      post('/api/subreddit_stylesheet', body: {op: "save", stylesheet_contents: stylesheet, uh: @modhash})
     end
 
     # Subscribe to a subreddit
@@ -69,7 +69,7 @@ module Snoo
     def subscribe subreddit, action = "sub"
       logged_in?
       raise "parameter error: action must be one of sub, unsub; is #{action}" unless %w{sub unsub}.include?(action)
-      self.class.post('/api/subscribe', body: {action: action, sr: subreddit, uh: @modhash})
+      post('/api/subscribe', body: {action: action, sr: subreddit, uh: @modhash})
     end
 
     # Unsubscribe from a subreddit
@@ -87,7 +87,7 @@ module Snoo
     # @param (see #delete_header)
     # @return (see #clear_sessions)
     def subreddit_info subreddit
-      self.class.get("/r/#{subreddit}/about.json")
+      get("/r/#{subreddit}/about.json")
     end
 
     # Get subreddit stylesheet and images
@@ -96,7 +96,7 @@ module Snoo
     # @return (see #clear_sessions)
     def get_stylesheet subreddit
       logged_in?
-      self.class.get("/r/#{subreddit}/about/stylesheet.json")
+      get("/r/#{subreddit}/about/stylesheet.json")
     end
 
     # Get subreddits I have
@@ -115,7 +115,7 @@ module Snoo
       query[:after] = after if after
       query[:before] = before if before
       url = "/reddits/mine/%s.json" % (condition if condition)
-      self.class.get(url, query: query)
+      get(url, query: query)
     end
 
     # Get a list of subreddits
@@ -135,7 +135,7 @@ module Snoo
       query[:after] = after if after
       query[:before] = before if before
 
-      self.class.get(url, query: query)
+      get(url, query: query)
     end
 
     # Search subreddits
@@ -152,7 +152,7 @@ module Snoo
       query[:limit] = limit if limit
       query[:after] = after if after
       query[:before] = before if before
-      self.class.get('/reddits/search.json', query: query)
+      get('/reddits/search.json', query: query)
     end
 
     # Add a moderator to the subreddit
@@ -211,7 +211,7 @@ module Snoo
     # @param (see #delete_header)
     # @return (see #clear_sessions)
     def get_moderators subreddit
-      self.class.get("/r/#{subreddit}/about/moderators.json")
+      get("/r/#{subreddit}/about/moderators.json")
     end
 
     # List contributors of a subreddit
@@ -220,7 +220,7 @@ module Snoo
     # @param (see #clear_sessions)
     def get_contributors subreddit
       logged_in?
-      self.class.get("/r/#{subreddit}/about/contributors.json")
+      get("/r/#{subreddit}/about/contributors.json")
     end
 
     # List banned users of a subreddit
@@ -229,7 +229,7 @@ module Snoo
     # @param (see #clear_sessions)
     def get_banned_users subreddit
       logged_in?
-      self.class.get("/r/#{subreddit}/about/banned.json")
+      get("/r/#{subreddit}/about/banned.json")
     end
   end
 end

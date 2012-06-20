@@ -10,13 +10,13 @@ module Snoo
     # @param password [String] The password of the reddit account
     # @return [HTTParty::Response] The httparty request object.
     def log_in username, password
-      login = self.class.post("/api/login", :body => {user: username, passwd: password, api_type: 'json'})
+      login = post("/api/login", :body => {user: username, passwd: password, api_type: 'json'})
       errors = login['json']['errors']
       raise errors[0][1] unless errors.size == 0
       cookies login.headers['set-cookie']
       @modhash = login['json']['data']['modhash']
       @username = username
-      @userid = 't2_' + self.class.get('/api/me.json')['data']['id']
+      @userid = 't2_' + get('/api/me.json')['data']['id']
       return login
     end
 
@@ -36,7 +36,7 @@ module Snoo
     # @return (see #log_in)
     def clear_sessions password
       logged_in?
-      clear = self.class.post('/api/clear_sessions', body: { curpass: password, dest: @baseurl, uh: @modhash })
+      clear = post('/api/clear_sessions', body: { curpass: password, dest: @baseurl, uh: @modhash })
       cookies clear.headers['set-cookie']
       return clear
     end
@@ -49,7 +49,7 @@ module Snoo
     # @return (see #clear_sessions)
     def delete_user password, reason = "deleted by script command"
       logged_in?
-      delete = self.class.post('/api/delete_user', body: {
+      delete = post('/api/delete_user', body: {
         confirm: true,
         delete_message: reason,
         passwd: password,
@@ -63,7 +63,7 @@ module Snoo
     # @return [Hash] Parsed JSON from reddit
     def me
       logged_in?
-      self.class.get("/api/me.json").body
+      get("/api/me.json").body
     end
 
     # Changes the current user's password/email.
@@ -83,7 +83,7 @@ module Snoo
         verpass: newPass
         }
       params[:email] = email if email
-      update = self.class.post('/api/update', body: params )
+      update = post('/api/update', body: params )
       cookies update.headers['set-cookie']
       return update
     end

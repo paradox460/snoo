@@ -1,6 +1,6 @@
 require 'httparty'
 
-%w{version utilities account flair links_comments listings moderation pms subreddits users}.each do |local|
+%w{version exceptions utilities account flair links_comments listings moderation pms subreddits users}.each do |local|
   require "snoo/#{local}"
 end
 # Snoo reddit API wrapper
@@ -24,8 +24,10 @@ module Snoo
     def initialize( url = "http://www.reddit.com", useragent = "Snoo ruby reddit api wrapper v#{VERSION}" )
       @baseurl = url
       self.class.base_uri url
-      @headers = {useragent: useragent }
-      self.class.headers 'User-Agent' => useragent
+      @headers = {'User-Agent' => useragent }
+      self.class.headers @headers
+      @cookies = nil
+      @modhash = nil
     end
   end
 end

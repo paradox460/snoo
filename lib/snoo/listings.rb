@@ -22,7 +22,7 @@ module Snoo
       query[:depth] = depth if depth
       query[:sort] = sort if sort
       url = "/comments/%s%s.json" % [link_id, ('/' + comment_id if comment_id)]
-      self.class.get(url, query: query)
+      get(url, query: query)
     end
 
     # Gets a listing of links from reddit.
@@ -62,7 +62,7 @@ module Snoo
       query[:before] = before if before
 
       # Make the request
-      self.class.get(url, query: query)
+      get(url, query: query)
     end
 
     # Search reddit
@@ -96,7 +96,7 @@ module Snoo
       httpquery[:sort] = sort if sort
       httpquery[:syntax] = syntax if syntax != 'lucene'
 
-      self.class.get(url, query: httpquery)
+      get(url, query: httpquery)
     end
   end
 end

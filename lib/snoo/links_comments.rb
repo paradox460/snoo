@@ -11,7 +11,7 @@ module Snoo
     # @return (see #clear_sessions)
     def comment text, id
       logged_in?
-      self.class.post('/api/comment', body: { text: text, thing_id: id, uh: @modhash})
+      post('/api/comment', body: { text: text, thing_id: id, uh: @modhash})
     end
 
     # Deletes a thing from the site
@@ -20,7 +20,7 @@ module Snoo
     # @return (see #clear_sessions)
     def delete id
       logged_in?
-      self.class.post('/api/del', body: { id: id, uh: @modhash })
+      post('/api/del', body: { id: id, uh: @modhash })
     end
 
     # Edits a thing.
@@ -30,7 +30,7 @@ module Snoo
     # @return (see #clear_sessions)
     def edit text, id
       logged_in?
-      self.class.post('/api/editusertext', body: {text: text, thing_id: id, uh: @modhash})
+      post('/api/editusertext', body: {text: text, thing_id: id, uh: @modhash})
     end
 
     # Hides a thing
@@ -39,7 +39,7 @@ module Snoo
     # @return (see #clear_sessions)
     def hide id
       logged_in?
-      self.class.post('/api/hide', body: {id: id, uh: @modhash})
+      post('/api/hide', body: {id: id, uh: @modhash})
     end
 
     # Get a listing of things which have the provided URL.
@@ -56,7 +56,7 @@ module Snoo
       query = { limit: limit }
       query[:id] = id if id
       query[:url] = url if url
-      self.class.get('/api/info.json', query: query)
+      get('/api/info.json', query: query)
     end
 
     # Marks a post NSFW. Currently, this only works on links
@@ -65,7 +65,7 @@ module Snoo
     # @return (see #clear_sessions)
     def mark_nsfw id
       logged_in?
-      self.class.post('/api/marknsfw', body: {id: id, uh: @modhash})
+      post('/api/marknsfw', body: {id: id, uh: @modhash})
     end
 
     # Reports a comment or link
@@ -74,7 +74,7 @@ module Snoo
     # @reutrn (see #comment)
     def report id
       logged_in?
-      self.class.post('/api/report', body: {id: id, uh: @modhash})
+      post('/api/report', body: {id: id, uh: @modhash})
     end
 
     # Saves a link
@@ -83,7 +83,7 @@ module Snoo
     # @return (see #clear_sessions)
     def save id
       logged_in?
-      self.class.post('/api/save', body: { id: id, uh: @modhash})
+      post('/api/save', body: { id: id, uh: @modhash})
     end
 
     # Submit a link or self post
@@ -104,7 +104,7 @@ module Snoo
       post[:kind] = (url ? "link" : "self")
       post[:url] = url if url
       post[:text] = text if text
-      self.class.post('/api/submit', body: post)
+      post('/api/submit', body: post)
     end
 
     # Unhide a thing
@@ -113,7 +113,7 @@ module Snoo
     # @return (see #clear_sessions)
     def unhide id
       logged_in?
-      self.class.post('/api/unhide', body: {id: id, uh: @modhash})
+      post('/api/unhide', body: {id: id, uh: @modhash})
     end
 
     # Un-mark NSFW a thing.
@@ -122,7 +122,7 @@ module Snoo
     # @return (see #clear_sessions)
     def unmark_nsfw id
       logged_in?
-      self.class.post('/api/unmarknsfw', body: {id: id, uh: @modhash})
+      post('/api/unmarknsfw', body: {id: id, uh: @modhash})
     end
 
     # Vote on a comment or link
@@ -133,7 +133,7 @@ module Snoo
     def vote direction, id
       logged_in?
       raise "parameter error: direction needs to be one of -1, 0, or 1 (was #{direction}" unless (-1..1).include?(direction)
-      self.class.post('/api/vote', body: {id: id, dir: direction, uh: @modhash})
+      post('/api/vote', body: {id: id, dir: direction, uh: @modhash})
     end
 
     # Upvote

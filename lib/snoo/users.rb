@@ -26,14 +26,14 @@ module Snoo
     # @return (see #clear_sessions)
     def get_friends
       logged_in?
-      self.class.get('/prefs/friends.json')
+      get('/prefs/friends.json')
     end
 
     # Get info about a user account
     #
     # @param username [String] The username to target.
     def get_user_info username
-      self.class.get("/user/#{username}/about.json")
+      get("/user/#{username}/about.json")
     end
 
     # Get a listing of user posts. Some options may be restricted
@@ -54,7 +54,7 @@ module Snoo
       query[:after] = after if after
       query[:before] = before if before
       query[:limit] = limit if limit
-      self.class.get("/user/%s%s.json" % [username, ('/' + type if type != overview)])
+      get("/user/%s%s.json" % [username, ('/' + type if type != overview)])
     end
   end
 end

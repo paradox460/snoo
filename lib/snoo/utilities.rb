@@ -5,6 +5,21 @@ module Snoo
   # @author (see Snoo)
   module Utilities
     private
+      # HTTParty get wrapper. This serves to clean up code, as well as throw webserver errors wherever needed
+      #
+      def get *args, &block
+        response = self.class.get *args, &block
+        raise WebserverError, response.code unless response.code == 200
+        response
+      end
+
+      # HTTParty POST wrapper. This serves to clean up code, as well as throw webserver errors wherever needed, same as {#get}
+      #
+      def post *args, &block
+        response = self.class.post *args, &block
+        raise WebserverError, response.code unless response.code == 200
+        response
+      end
       # Set the cookie header and instance variable
       #
       # @param cookie [String] The cookie text, as show in a 'set-cookie' header
@@ -16,7 +31,7 @@ module Snoo
       # Raises an error if we aren't currently logged in
       #
       def logged_in?
-        raise "not logged in" if @modhash.nil? && @modhash.nil?
+        raise NotAuthenticated if @cookies.nil? or @modhash.nil?
       end
 
       # Posts to '/api/friend'. This method exists because there are tons of things that use this
@@ -34,7 +49,7 @@ module Snoo
         params[:name] = api_name if api_name
         params[:note] = api_note if api_note
         params[:r] = api_subreddit if api_subreddit
-        self.class.post('/api/friend', body: params)
+        post('/api/friend', body: params)
       end
 
       # Posts to '/api/unfriend'. This method exists because there are a ton of things that use this.
@@ -52,7 +67,7 @@ module Snoo
         params[:name] = api_name if api_name
         params[:id] = api_id if api_id
         params[:r] = api_subreddit if api_subreddit
-        self.class.post('/api/unfriend', body: params)
+        post('/api/unfriend', body: params)
       end
   end
 end
