@@ -15,7 +15,7 @@ module Snoo
     # @return (see #clear_sessions)
     def get_comments link_id, comment_id = nil, context = nil, limit = 100, depth = nil, sort = nil
       sorts = %w{old new hot top controversial best}
-      raise "parameter error: sort cannot be #{sort}" unless sorts.include?(sort) or sort.nil?
+      raise ArgumentError, "sort cannot be #{sort}" unless sorts.include?(sort) or sort.nil?
       query = {}
       query[:context] = context if context
       query[:limit] = limit if limit
@@ -40,15 +40,15 @@ module Snoo
       sorts = %w{new rising}
       times = %w{hour day week month year}
       # Invalid Page
-      raise "parameter error: page must be #{pages * ', '}, is #{page}" unless pages.include?(page) or page.nil?
+      raise ArgumentError, "page must be #{pages * ', '}, is #{page}" unless pages.include?(page) or page.nil?
       # Invalid Sort
-      raise "parameter error: sort must be one of #{sorts * ', '}, is #{sort}" unless sorts.include?(sort) or sort.nil?
+      raise ArgumentError, "sort must be one of #{sorts * ', '}, is #{sort}" unless sorts.include?(sort) or sort.nil?
       # Sort on useless page
-      raise "parameter error: sort can only be used on page = 'new'" if page != 'new' && sort
+      raise ArgumentError, "sort can only be used on page = 'new'" if page != 'new' && sort
       # Invalid time
-      raise "parameter error: time can only be one of #{times * ', '}, is #{time}" unless times.include?(time) or time.nil?
+      raise ArgumentError, "time can only be one of #{times * ', '}, is #{time}" unless times.include?(time) or time.nil?
       # Invalid limit
-      raise "parameter error: limit cannot be outside 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise ArgumentError, "limit cannot be outside 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
 
       # Build the basic url
       url = "%s/%s.json" % [('/r/' + subreddit if subreddit ), (page if page)]
@@ -77,10 +77,10 @@ module Snoo
     # @param syntax [cloudsearch, lucene] The search syntax.
     # @return (see #clear_sessions)
     def search query, restrict_subreddit = false, subreddit = nil, limit = nil, before = nil, after = nil, sort = nil, syntax = 'lucene'
-      raise 'parameter error: restrict_subreddit needs to be boolean' unless [true, false].include?(restrict_subreddit)
-      raise "parameter error: limit needs to be 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
-      raise "parameter error: sort needs to be one of relevance, new, top, is #{sort}" unless %w{relevance new top}.include?(sort) or sort.nil?
-      raise "parameter error: syntax needs to be one of cloudsearch, lucene; is #{syntax}" if %w{cloudsearch lucene}.include?(syntax)
+      raise ArgumentError, 'restrict_subreddit needs to be boolean' unless [true, false].include?(restrict_subreddit)
+      raise ArgumentError, "limit needs to be 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise ArgumentError, "sort needs to be one of relevance, new, top, is #{sort}" unless %w{relevance new top}.include?(sort) or sort.nil?
+      raise ArgumentError, "syntax needs to be one of cloudsearch, lucene; is #{syntax}" if %w{cloudsearch lucene}.include?(syntax)
 
       # This supports searches with and without a subreddit
       url = "%s/search.json" % (subreddit if subreddit)

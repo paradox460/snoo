@@ -52,7 +52,7 @@ module Snoo
     # @param limit [Fixnum] The number of things to return. Go too high and the API will ignore you
     # @return (see #clear_sessions)
     def info id = nil, url = nil, limit = 100
-      raise 'parameter error: url or id, not both' if id && url
+      raise ArgumentError, 'url or id, not both' if id && url
       query = { limit: limit }
       query[:id] = id if id
       query[:url] = url if url
@@ -95,7 +95,7 @@ module Snoo
     # @return (see #clear_sessions)
     def submit title, subreddit, url = nil, text = nil
       logged_in?
-      raise 'parameter error: either url or text, not both' if url && text
+      raise ArgumentError, 'url or text, not both' if url && text
       post = {
         title: title,
         sr: subreddit,
@@ -132,7 +132,7 @@ module Snoo
     # @return (see #clear_sessions)
     def vote direction, id
       logged_in?
-      raise "parameter error: direction needs to be one of -1, 0, or 1 (was #{direction}" unless (-1..1).include?(direction)
+      raise ArgumentError, "direction needs to be one of -1, 0, or 1 (was #{direction}" unless (-1..1).include?(direction)
       post('/api/vote', body: {id: id, dir: direction, uh: @modhash})
     end
 

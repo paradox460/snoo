@@ -42,11 +42,11 @@ module Snoo
     def subreddit_settings title, subreddit, description = nil, sidebar = nil, lang = en, type = 'public', post_type = 'any', allow_frontpage = true, show_media = true, header = nil, adult = false
       logged_in?
       bool = [true, false]
-      raise "parameter error: type must be one of public, private, restricted, is #{type}" unless %w{public private restricted}.include?(type)
-      raise "parameter error: post_type must be one of any, link, self; is #{type}" unless %w{any link self}.include?(post_type)
-      raise "parameter error: allow_frontpage must be boolean" unless bool.include?(allow_frontpage)
-      raise "parameter error: show_media must be boolean" unless bool.include?(show_media)
-      raise "parameter error: adult must be boolean" unless bool.include?(adult)
+      raise ArgumentError, "type must be one of public, private, restricted, is #{type}" unless %w{public private restricted}.include?(type)
+      raise ArgumentError, "post_type must be one of any, link, self; is #{type}" unless %w{any link self}.include?(post_type)
+      raise ArgumentError, "allow_frontpage must be boolean" unless bool.include?(allow_frontpage)
+      raise ArgumentError, "show_media must be boolean" unless bool.include?(show_media)
+      raise ArgumentError, "adult must be boolean" unless bool.include?(adult)
       params = {title: title, description: sidebar, public_description: description, lang: lang, type: type, link_type: post_type, allow_top: allow_frontpage, show_media: show_media, "header-title" => header, r: subreddit, uh: @modhash}
       post('/api/site_admin', body: params)
     end
@@ -68,7 +68,7 @@ module Snoo
     # @return (see #clear_sessions)
     def subscribe subreddit, action = "sub"
       logged_in?
-      raise "parameter error: action must be one of sub, unsub; is #{action}" unless %w{sub unsub}.include?(action)
+      raise ArgumentError, "action must be one of sub, unsub; is #{action}" unless %w{sub unsub}.include?(action)
       post('/api/subscribe', body: {action: action, sr: subreddit, uh: @modhash})
     end
 
@@ -108,8 +108,8 @@ module Snoo
     # @return (see #clear_sessions)
     def my_reddits condition = nil, limit = nil, after = nil, before = nil
       logged_in?
-      raise "parameter error: condition must be one of subscriber, contributor, moderator; is #{condition}" unless %w{subscriber contributor moderator}.include?(condition) or condition.nil?
-      raise "parameter error: limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise ArgumentError, "condition must be one of subscriber, contributor, moderator; is #{condition}" unless %w{subscriber contributor moderator}.include?(condition) or condition.nil?
+      raise ArgumentError, "limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
       query = {}
       query[:limit] = limit if limit
       query[:after] = after if after
@@ -126,8 +126,8 @@ module Snoo
     # @param before [String] Return subreddits *before* this id.
     # @return (see #clear_sessions)
     def get_reddits condition = nil, limit = nil, after = nil, before = nil
-      raise "parameter error: condition must be one of popular, new, banned; is #{condition}" unless %w{popular new banned}.include?(condition) or condition.nil?
-      raise "parameter error: limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise ArgumentError, "condition must be one of popular, new, banned; is #{condition}" unless %w{popular new banned}.include?(condition) or condition.nil?
+      raise ArgumentError, "limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
 
       url = "/reddits/%s.json" % (condition if condition)
       query = {}
@@ -146,7 +146,7 @@ module Snoo
     # @param before [String] Return subreddits *before* this id.
     # @return (see #clear_sessions)
     def search_reddits q, limit = nil, after = nil, before = nil
-      raise "parameter error: limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise ArgumentError, "limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
 
       query = {q: q}
       query[:limit] = limit if limit

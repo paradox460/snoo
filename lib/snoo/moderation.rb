@@ -21,7 +21,7 @@ module Snoo
     def distinguish id, how
       logged_in?
       hows = %w{yes no admin special}
-      raise "parameter error: how should be one of #{hows * ', '}, is #{how}" if hows.include?(how)
+      raise ArgumentError, "how should be one of #{hows * ', '}, is #{how}" if hows.include?(how)
       post('/api/distinguish', body: {id: id, how: how, uh: @modhash})
     end
 
@@ -53,7 +53,7 @@ module Snoo
     def remove id, spam
       logged_in?
       spams = [true, false]
-      raise "parameter error: spam should be boolean, is #{spam}" unless spams.include?(spam)
+      raise ArgumentError, "spam should be boolean, is #{spam}" unless spams.include?(spam)
       post('/api/remove', body: {id: id, spam: spam, uh: @modhash})
     end
 

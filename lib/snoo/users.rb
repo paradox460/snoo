@@ -46,9 +46,9 @@ module Snoo
     # @param limit [1..100] Number of results to return
     # @return (see #clear_sessions)
     def get_user_listing username, type = 'overview', sort = 'new', after = nil, before = nil, limit = nil
-      raise "parameter error: type must be one of overview, submitted, commented, liked, disliked, hidden, saved; is #{type}" unless %w{overview submitted commented liked disliked hidden saved}.include?(type)
-      raise "parameter error: sort must be one of new, hot, top, controversial; is #{sort}" unless %w{new hot top controversial}.include?(sort)
-      raise "parameter error: limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise ArgumentError, "type must be one of overview, submitted, commented, liked, disliked, hidden, saved; is #{type}" unless %w{overview submitted commented liked disliked hidden saved}.include?(type)
+      raise ArgumentError, "sort must be one of new, hot, top, controversial; is #{sort}" unless %w{new hot top controversial}.include?(sort)
+      raise ArgumentError, "limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
       query = {}
       query[:sort] = sort if sort != 'new'
       query[:after] = after if after

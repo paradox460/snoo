@@ -13,7 +13,7 @@ module Snoo
     def clear_flair_templates type, subreddit
       logged_in?
       tests = ['USER_FLAIR', 'LINK_FLAIR']
-      raise 'parameter error: type needs to be either USER_FLAIR or LINK_FLAIR' unless tests.include?(type)
+      raise ArgumentError, 'type needs to be either USER_FLAIR or LINK_FLAIR' unless tests.include?(type)
       post('/api/clearflairtemplates', body: { flair_type: type, r: subreddit, uh: @modhash})
     end
 
@@ -46,7 +46,7 @@ module Snoo
     # @return (see #clear_sessions)
     def flair css_class, text, subreddit, name = nil, link = nil
       logged_in?
-      raise "parameter error: either link or name, not both" if link && name
+      raise ArgumentError, "link or name, not both" if link && name
       params = {
         css_class: css_class,
         text: text,
@@ -107,7 +107,7 @@ module Snoo
     # @return (see #clear_sessions)
     def get_flair_list subreddit, limit = 1000, before = nil, after = nil
       logged_in?
-      raise 'parameter error: limit is too high/low' unless (1..1000).include?(limit)
+      raise ArgumentError, 'limit is too high/low' unless (1..1000).include?(limit)
       query = {
         limit: limit,
         uh: @modhash
@@ -129,9 +129,9 @@ module Snoo
     def flair_template css_class, type, text, user_editable, subreddit, template_id = nil
       logged_in?
       test = ['USER_FLAIR', 'LINK_FLAIR']
-      raise 'parameter error: type is either USER_FLAIR or LINK_FLAIR' unless test.include?(type)
+      raise ArgumentError, 'type is either USER_FLAIR or LINK_FLAIR' unless test.include?(type)
       test = [true, false]
-      raise 'parameter error: user_editable needs to be true or false' unless test.include?(user_editable)
+      raise ArgumentError, 'user_editable needs to be true or false' unless test.include?(user_editable)
 
       params = {
         css_class: css_class,
@@ -155,7 +155,7 @@ module Snoo
     # @return (see #clear_sessions)
     def select_flair_template template_id, text, subreddit, link = nil, user = nil
       logged_in?
-      raise 'parameter error: link or user, not both' if link && user
+      raise ArgumentError, 'link or user, not both' if link && user
       params = {
         flair_template_id: template_id,
         text: text,
@@ -175,7 +175,7 @@ module Snoo
     def flair_toggle enabled, subreddit
       logged_in?
       test = [true, false]
-      raise 'parameter error: enabled must be boolean' unless test.include?(enabled)
+      raise ArgumentError, 'enabled must be boolean' unless test.include?(enabled)
       post('/api/setflairenabled', body: {flair_enabled: enabled, uh: @modhash, r: subreddit})
     end
 

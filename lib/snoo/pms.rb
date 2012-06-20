@@ -54,9 +54,9 @@ module Snoo
     def get_messages where, mark = false, limit = nil, before = nil, after = nil
       bools = [true, false]
       wheres = %w{inbox unread sent}
-      raise "parameter error: where must be #{wheres * ', '}, is #{where}" unless wheres.include?(where)
-      raise "parameter error: mark must be boolean, is #{mark}" unless bools.include?(mark)
-      raise "parameter error: limit must be 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise ArgumentError, "where must be #{wheres * ', '}, is #{where}" unless wheres.include?(where)
+      raise ArgumentError, "mark must be boolean, is #{mark}" unless bools.include?(mark)
+      raise ArgumentError, "limit must be 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
 
       query = {}
       query[:mark] = mark if mark
