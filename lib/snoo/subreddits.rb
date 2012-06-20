@@ -1,5 +1,5 @@
 module Snoo
-  class Snoo
+  class Client
     # @!group Subreddits
 
     # Deletes the header image of a subreddit

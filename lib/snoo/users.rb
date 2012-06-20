@@ -1,5 +1,5 @@
 module Snoo
-  class Snoo
+  class Client
     # @!group Users
 
     # Friend a user

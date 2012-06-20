@@ -1,5 +1,5 @@
 module Snoo
-  class Snoo
+  class Client
     # @!group Links and Comments
 
     # Posts a comment to the site

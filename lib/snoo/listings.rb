@@ -1,5 +1,5 @@
 module Snoo
-  class Snoo
+  class Client
     # @!group Page listings
 
     # Get a comment listing from the site

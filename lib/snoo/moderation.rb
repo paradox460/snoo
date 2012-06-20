@@ -1,5 +1,5 @@
 module Snoo
-  class Snoo
+  class Client
     # @!group Moderation
 
     # Approve a thing

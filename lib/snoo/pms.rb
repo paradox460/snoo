@@ -1,5 +1,5 @@
 module Snoo
-  class Snoo
+  class Client
     # @!group Private Messages
 
     # Block a user from sending you messages

@@ -1,5 +1,5 @@
 module Snoo
-  class Snoo
+  class Client
     private
       # Set the cookie header and instance variable
       #

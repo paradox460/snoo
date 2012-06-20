@@ -1,5 +1,5 @@
 module Snoo
-  class Snoo
+  class Client
     # @!group Flair
 
     # Clear all the flair templates of a particular type
@@ -38,7 +38,7 @@ module Snoo
     # @param css_class [String] The class(es) applied to the flair. Whitespace separated
     # @param text [String] The flair text
     # @param subreddit [String] The subreddit targeted.
-    # @param name [String] The user who we are flairing. This requires a username.
+    # @param name [String] The user who we are flairing. This requires a username.r
     # @param link [String] The thing id of the link (if a link). Begins with `t3_`
     # @return (see #clear_sessions)
     def flair css_class, text, subreddit, name = nil, link = nil

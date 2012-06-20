@@ -18,7 +18,7 @@ module Snoo
   # Snoo reddit API wrapper
   #
   # @author Jeff Sandberg <paradox460@gmail.com>
-  class Snoo
+  class Client
     include HTTParty
 
     # Creates a new instance of Snoo
