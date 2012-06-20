@@ -1,5 +1,7 @@
 module Snoo
   class Snoo
+    # @!group Users
+
     # Friend a user
     #
     # @param name [String] The username to target

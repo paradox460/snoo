@@ -1,5 +1,6 @@
 module Snoo
   class Snoo
+    # @!group Flair
 
     # Clear all the flair templates of a particular type
     #

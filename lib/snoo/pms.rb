@@ -1,5 +1,7 @@
 module Snoo
   class Snoo
+    # @!group Private Messages
+
     # Block a user from sending you messages
     #
     # @param id [String] the user id.

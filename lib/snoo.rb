@@ -23,7 +23,7 @@ module Snoo
 
     # Creates a new instance of Snoo
     #
-    # @param url [String] url The base url of reddit. Defaults to http://www.reddit.com
+    # @param url [String] url The base url of reddit.
     # @param useragent [String] The User-Agent this bot will use.
     def initialize( url = "http://www.reddit.com", useragent = "Snoo ruby reddit api wrapper v#{VERSION}" )
       @baseurl = url

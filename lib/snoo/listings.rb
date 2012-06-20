@@ -1,5 +1,7 @@
 module Snoo
   class Snoo
+    # @!group Page listings
+
     # Get a comment listing from the site
     #
     # @param link_id [String] The link id of the comment thread. Must always be present
@@ -70,7 +72,7 @@ module Snoo
     # @param before [String] Return things *before* this id
     # @param after [String] Return things *after* this id
     # @param sort [relevance, new, top] The sorting of the results.
-    # @param syntax [cloudsearch, lucene] The search syntax. Defaults to lucene
+    # @param syntax [cloudsearch, lucene] The search syntax.
     # @return (see #clear_sessions)
     def search query, restrict_subreddit = false, subreddit = nil, limit = nil, before = nil, after = nil, sort = nil, syntax = 'lucene'
       raise 'parameter error: restrict_subreddit needs to be boolean' unless [true, false].include?(restrict_subreddit)

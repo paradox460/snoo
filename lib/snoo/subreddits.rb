@@ -1,5 +1,7 @@
 module Snoo
   class Snoo
+    # @!group Subreddits
+
     # Deletes the header image of a subreddit
     #
     # @param subreddit [String] The subreddit targeted
@@ -69,7 +71,7 @@ module Snoo
     end
 
     # Unsubscribe from a subreddit
-    # This is an alias for `subscribe "unsub"…`
+    # This is an alias for `subscribe "unsub"`
     #
     # @param (see #delete_header)
     # @return (see #clear_sessions)

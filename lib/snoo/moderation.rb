@@ -1,5 +1,7 @@
 module Snoo
   class Snoo
+    # @!group Moderation
+
     # Approve a thing
     #
     # @param id [String] Thing targeted

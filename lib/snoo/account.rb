@@ -1,5 +1,6 @@
 module Snoo
   class Snoo
+    # @!group Account
 
     # Log into a reddit account. You need to do this to use any restricted or write APIs
     #

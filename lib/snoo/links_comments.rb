@@ -1,5 +1,7 @@
 module Snoo
   class Snoo
+    # @!group Links and Comments
+
     # Posts a comment to the site
     #
     # @param text [String] The comment text, formatted as markdown
