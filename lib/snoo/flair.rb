@@ -36,11 +36,12 @@ module Snoo
     # Sets flair on a thing, currently supports links and users. Must specify *either* link *or* user, *not* both
     #
     # @param css_class [String] The class(es) applied to the flair. Whitespace separated
-    # @param link [String] The thing id of the link (if a link). Begins with `t3_`
-    # @param name [String] The user who we are flairing. This requires a username.
+    # @param text [String] The flair text
     # @param subreddit [String] The subreddit targeted.
+    # @param name [String] The user who we are flairing. This requires a username.
+    # @param link [String] The thing id of the link (if a link). Begins with `t3_`
     # @return (see #clear_sessions)
-    def flair css_class, link = nil, name = nil, text, subreddit
+    def flair css_class, text, subreddit, name = nil, link = nil
       logged_in?
       raise "parameter error: either link or name, not both" if link && name
       params = {
@@ -49,8 +50,8 @@ module Snoo
         r: subreddit,
         uh: @modhash
       }
-      params[:link] = link if link
       params[:name] = name if name
+      params[:link] = link if link
 
       self.class.post('/api/flair', body: params)
     end
@@ -96,12 +97,12 @@ module Snoo
     # Downloads flair from the subreddit
     # This is limited to 1000 per request, use before/after to get "pages"
     #
+    # @param subreddit [String] The subreddit targeted.
     # @param limit [Fixnum] The amount of flairs to get. Must be between 1 and 1000
     # @param before [String] Return entries just before this user id
     # @param after [String] Return entries just after this user id
-    # @param subreddit [String] The subreddit targeted.
     # @return (see #clear_sessions)
-    def get_flair_list limit = 1000, before = nil, after = nil, subreddit
+    def get_flair_list subreddit, limit = 1000, before = nil, after = nil
       logged_in?
       raise 'parameter error: limit is too high/low' unless (1..1000).include?(limit)
       query = {
@@ -116,13 +117,13 @@ module Snoo
     # Create or edit a flair template.
     #
     # @param css_class [String] The list of css classes applied to this style, space separated
-    # @param template_id [String] The flair template ID. Get this from {#flair_template_list}
     # @param type [USER_FLAIR, LINK_FLAIR] The type of flair template.
     # @param text [String] The flair template's text.
-    # @param user_editable [true, false] If the template allows users to specify their own text
-    # @param subreddit [String] The subreddit targeted.
+    # @param user_editable [true, false] If the templ
+    # @param subreddit [String] The subreddit targeted.ate allows users to specify their own text
+    # @param template_id [String] The flair template ID. Get this from {#flair_template_list}
     # @return (see #clear_sessions)
-    def flair_template css_class, template_id = nil, type, text, user_editable, subreddit
+    def flair_template css_class, type, text, user_editable, subreddit, template_id = nil
       logged_in?
       test = ['USER_FLAIR', 'LINK_FLAIR']
       raise 'parameter error: type is either USER_FLAIR or LINK_FLAIR' unless test.include?(type)
@@ -144,12 +145,12 @@ module Snoo
     # Select a flair template and apply it to a user or link
     #
     # @param template_id [String] The template id to apply. Get this from {#flair_template_list}
-    # @param link [String] The link id to apply to
-    # @param user [String] The username to apply flair to
     # @param text [String] The flair text
     # @param subreddit [String] The subreddit targeted.
+    # @param link [String] The link id to apply to
+    # @param user [String] The username to apply flair to
     # @return (see #clear_sessions)
-    def select_flair_template template_id, link = nil, user = nil, text, subreddit
+    def select_flair_template template_id, text, subreddit, link = nil, user = nil
       logged_in?
       raise 'parameter error: link or user, not both' if link && user
       params = {

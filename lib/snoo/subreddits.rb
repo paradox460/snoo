@@ -26,6 +26,7 @@ module Snoo
     # @note You **must** fill out every paramiter, otherwise they will return to reddit defaults
     #
     # @param title [String] The subreddit's title
+    # @param (see #delete_header)
     # @param description [String] The subreddit's public description
     # @param sidebar [String] The subreddit's sidebar
     # @param lang [String] The default language. ISO language code
@@ -35,9 +36,8 @@ module Snoo
     # @param show_media [true, false] Show thumbnails and media embeds
     # @param header [String] The header mouse-over text
     # @param adult [true, false] If the subreddit requires over 18 access
-    # @param (see #delete_header)
     # @return (see #clear_sessions)
-    def subreddit_settings title, description = nil, sidebar = nil, lang = en, type = 'public', post_type = 'any', allow_frontpage = true, show_media = true, header = nil, adult = false, subreddit
+    def subreddit_settings title, subreddit, description = nil, sidebar = nil, lang = en, type = 'public', post_type = 'any', allow_frontpage = true, show_media = true, header = nil, adult = false
       logged_in?
       bool = [true, false]
       raise "parameter error: type must be one of public, private, restricted, is #{type}" unless %w{public private restricted}.include?(type)
@@ -61,10 +61,10 @@ module Snoo
 
     # Subscribe to a subreddit
     #
-    # @param action [sub, unsub] Subscribe or unsubscribe
     # @param (see #delete_header)
+    # @param action [sub, unsub] Subscribe or unsubscribe
     # @return (see #clear_sessions)
-    def subscribe action = "sub", subreddit
+    def subscribe subreddit, action = "sub"
       logged_in?
       raise "parameter error: action must be one of sub, unsub; is #{action}" unless %w{sub unsub}.include?(action)
       self.class.post('/api/subscribe', body: {action: action, sr: subreddit, uh: @modhash})

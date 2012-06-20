@@ -87,11 +87,11 @@ module Snoo
     # Submit a link or self post
     #
     # @param title [String] Title of the post
+    # @param subreddit [String] The subreddit in which we are posting
     # @param url [String] The url for the post. If this is specified, it will not be a self post, and `text` will be ignored
     # @param text [String] The self-post text. Can be formatted in markdown
-    # @param subreddit [String] The subreddit in which we are posting
     # @return (see #clear_sessions)
-    def submit title, url = nil, text = nil, subreddit
+    def submit title, subreddit, url = nil, text = nil
       logged_in?
       raise 'parameter error: either url or text, not both' if url && text
       post = {

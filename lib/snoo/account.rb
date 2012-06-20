@@ -68,10 +68,10 @@ module Snoo
     #
     # @note (see #clear_sessions)
     # @param currentPass [String] The current password
-    # @param email [String] The email address you would like to update to. Optional
     # @param newPass [String] The new password
+    # @param email [String] The email address you would like to update to. Optional
     # @return (see #clear_sessions)
-    def update_user currentPass, email = nil, newPass
+    def update_user currentPass, newPass, email = nil
       logged_in?
       params = {
         curpass: currentPass,
