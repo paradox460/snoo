@@ -1,6 +1,8 @@
 module Snoo
-  class Client
-    # @!group Account
+  # Account related methods, such as logging in, deleting the current user, changing passwords, etc
+  #
+  # @author (see Snoo)
+  module Account
 
     # Log into a reddit account. You need to do this to use any restricted or write APIs
     #

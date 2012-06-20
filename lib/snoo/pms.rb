@@ -1,6 +1,8 @@
 module Snoo
-  class Client
-    # @!group Private Messages
+  # Methods for interacting with private messages
+  #
+  # @author (see Snoo)
+  module PM
 
     # Block a user from sending you messages
     #

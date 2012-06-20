@@ -1,6 +1,8 @@
 module Snoo
-  class Client
-    # @!group Links and Comments
+  # Methods for interacting with links and comments, such as leaving a comment, voting, etc
+  #
+  # @author (see Snoo)
+  module LinksComments
 
     # Posts a comment to the site
     #
@@ -134,6 +136,17 @@ module Snoo
       self.class.post('/api/vote', body: {id: id, dir: direction, uh: @modhash})
     end
 
+    # Upvote
+    # An alias for `vote 1, id`
+    #
+
+    # Downvote
+    # An alias for `vote -1, id`
+    #
+
+    # Sidevote (clear your vote)
+    # An alias for `vote 0, id`
+    #
 
   end
 end

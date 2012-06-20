@@ -1,6 +1,8 @@
 module Snoo
-  class Client
-    # @!group Subreddits
+  # Methods for administering a subreddit, as well as looking up subreddits (subreddit search)
+  #
+  # @author (see Snoo)
+  module Subreddit
 
     # Deletes the header image of a subreddit
     #

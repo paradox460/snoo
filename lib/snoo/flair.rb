@@ -1,6 +1,9 @@
 module Snoo
-  class Client
-    # @!group Flair
+  # Flair related methods.
+  # These are used for interacting with flair in reddit. Things like giving flair, setting templates, and whatnot.
+  #
+  # @author (see Snoo)
+  module Flair
 
     # Clear all the flair templates of a particular type
     #

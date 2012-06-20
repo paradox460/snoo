@@ -1,25 +1,21 @@
 require 'httparty'
 
-require "snoo/version"
-require "snoo/utilities"
-require "snoo/account"
-require "snoo/flair"
-require "snoo/links_comments"
-require "snoo/listings"
-require "snoo/moderation"
-require "snoo/pms"
-require "snoo/subreddits"
-require "snoo/users"
-
+%w{version utilities account flair links_comments listings moderation pms subreddits users}.each do |local|
+  require "snoo/#{local}"
+end
 # Snoo reddit API wrapper
 #
 # @author Jeff Sandberg <paradox460@gmail.com>
 module Snoo
   # Snoo reddit API wrapper
   #
-  # @author Jeff Sandberg <paradox460@gmail.com>
+  # @author (see Snoo)
   class Client
     include HTTParty
+    [Account, Flair, LinksComments, Listings, Moderation, PM, Utilities, User, Subreddit].each do |inc|
+      include inc
+    end
+
 
     # Creates a new instance of Snoo
     #
@@ -33,3 +29,4 @@ module Snoo
     end
   end
 end
+

@@ -1,6 +1,8 @@
 module Snoo
-  class Client
-    # @!group Page listings
+  # Methods for getting thing listings. Comments, links, etc
+  #
+  # @author (see Snoo)
+  module Listings
 
     # Get a comment listing from the site
     #

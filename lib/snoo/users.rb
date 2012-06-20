@@ -1,6 +1,8 @@
 module Snoo
-  class Client
-    # @!group Users
+  # Methods for interacting with users, such as adding and removing friends, getting user info, etc
+  #
+  # @author (see Snoo)
+  module User
 
     # Friend a user
     #

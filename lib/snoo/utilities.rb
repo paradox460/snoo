@@ -1,5 +1,9 @@
 module Snoo
-  class Client
+  # Utility functions.
+  # These are all private
+  #
+  # @author (see Snoo)
+  module Utilities
     private
       # Set the cookie header and instance variable
       #

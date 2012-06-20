@@ -1,6 +1,8 @@
 module Snoo
-  class Client
-    # @!group Moderation
+  # Methods for moderating on reddit, including tasks such as removing, approving, and distinguishing
+  #
+  # @author (see Snoo)
+  module Moderation
 
     # Approve a thing
     #
