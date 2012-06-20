@@ -6,7 +6,7 @@ module Snoo
       # @param cookie [String] The cookie text, as show in a 'set-cookie' header
       def cookies cookie
         @cookies = cookie
-        headers 'Cookie' => cookie
+        self.class.headers 'Cookie' => cookie
       end
 
       # Raises an error if we aren't currently logged in
