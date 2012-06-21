@@ -36,25 +36,23 @@ module Snoo
       post('/api/deleteflairtemplate', body: {flair_template_id: id, r: subreddit, uh: @modhash})
     end
 
-    # Sets flair on a thing, currently supports links and users. Must specify *either* link *or* user, *not* both
+    # Sets flair on a thing, currently supports links and users. Must specify **either** link *or* user, **not** both
     #
-    # @param css_class [String] The class(es) applied to the flair. Whitespace separated
-    # @param text [String] The flair text
     # @param subreddit [String] The subreddit targeted.
-    # @param name [String] The user who we are flairing. This requires a username.r
-    # @param link [String] The thing id of the link (if a link). Begins with `t3_`
+    # @param opts [Hash] An options hash.
+    # @option opts [String] :css_class The class(es) applied to the flair. Whitespace separated
+    # @option opts [String] :text The flair text
+    # @option opts [String] :name The user who we are flairing. This requires a username.r
+    # @option opts [String] :link The thing id of the link (if a link). Begins with `t3_`
     # @return (see #clear_sessions)
-    def flair css_class, text, subreddit, name = nil, link = nil
+    def flair subreddit, opts = {}
       logged_in?
-      raise ArgumentError, "link or name, not both" if link && name
+      raise ArgumentError, "link or name, not both" if opts[:link] && opts[:name]
       params = {
-        css_class: css_class,
-        text: text,
         r: subreddit,
-        uh: @modhash
+        uh: @modhash,
       }
-      params[:name] = name if name
-      params[:link] = link if link
+      params.merge! opts
 
       post('/api/flair', body: params)
     end
@@ -100,20 +98,19 @@ module Snoo
     # Downloads flair from the subreddit
     # This is limited to 1000 per request, use before/after to get "pages"
     #
-    # @param subreddit [String] The subreddit targeted.
-    # @param limit [Fixnum] The amount of flairs to get. Must be between 1 and 1000
-    # @param before [String] Return entries just before this user id
-    # @param after [String] Return entries just after this user id
+    # @param (see #flair)
+    # @option opts [Fixnum] :limit (1000) The amount of flairs to get. Must be between 1 and 1000
+    # @option opts [String] :before Return entries just before this user id
+    # @option opts [String] :after Return entries just after this user id
     # @return (see #clear_sessions)
-    def get_flair_list subreddit, limit = 1000, before = nil, after = nil
+    def get_flair_list subreddit, opts = {}
       logged_in?
-      raise ArgumentError, 'limit is too high/low' unless (1..1000).include?(limit)
+      raise ArgumentError, 'limit is too high/low' unless (1..1000).include?(opts[:limit])
       query = {
-        limit: limit,
+        limit: 1000,
         uh: @modhash
       }
-      query[:before] = before if before
-      query[:after] = after if after
+      query.merge! opts
       get("/r/#{subreddit}/api/flairlist.json", query: query)
     end
 
@@ -124,7 +121,7 @@ module Snoo
     # @param text [String] The flair template's text.
     # @param user_editable [true, false] If the templ
     # @param subreddit [String] The subreddit targeted.ate allows users to specify their own text
-    # @param template_id [String] The flair template ID. Get this from {#flair_template_list}
+    # @param template_id [String] The flair template ID, for editing. Get this from {#flair_template_list}
     # @return (see #clear_sessions)
     def flair_template css_class, type, text, user_editable, subreddit, template_id = nil
       logged_in?
@@ -150,10 +147,11 @@ module Snoo
     # @param template_id [String] The template id to apply. Get this from {#flair_template_list}
     # @param text [String] The flair text
     # @param subreddit [String] The subreddit targeted.
-    # @param link [String] The link id to apply to
-    # @param user [String] The username to apply flair to
+    # @param (see LinksComments#info)
+    # @option opts [String] :link The link id to apply to
+    # @option opts [String] :user The username to apply flair to
     # @return (see #clear_sessions)
-    def select_flair_template template_id, text, subreddit, link = nil, user = nil
+    def select_flair_template template_id, text, subreddit, opts = {}
       logged_in?
       raise ArgumentError, 'link or user, not both' if link && user
       params = {
@@ -162,8 +160,7 @@ module Snoo
         uh: @modhash,
         r: subreddit
       }
-      params[:link] = link if link
-      params[:user] = user if user
+      params.merge! opts
       post('/api/selectflair', body: params)
     end
 

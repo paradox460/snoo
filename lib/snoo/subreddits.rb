@@ -25,29 +25,39 @@ module Snoo
 
     # @todo test if every param is actually required
     # Sets subreddit settings.
-    # @note You **must** fill out every paramiter, otherwise they will return to reddit defaults
     #
-    # @param title [String] The subreddit's title
     # @param (see #delete_header)
-    # @param description [String] The subreddit's public description
-    # @param sidebar [String] The subreddit's sidebar
-    # @param lang [String] The default language. ISO language code
-    # @param type [public, private, restricted] The subreddits type
-    # @param post_type [any, link, self] The type of posts allowed on this subreddit
-    # @param allow_frontpage [true, false] Allow this subreddit to appear on the front page
-    # @param show_media [true, false] Show thumbnails and media embeds
-    # @param header [String] The header mouse-over text
-    # @param adult [true, false] If the subreddit requires over 18 access
+    # @param (see LinksComments#info)
+    # @option opts [String] :title The subreddit's title
+    # @option opts [String] :public_description The subreddit's public description
+    # @option opts [String] :description The subreddit's sidebar
+    # @option opts [String] :lang (en) The default language. ISO language code
+    # @option opts [public, private, restricted] :type (public) The subreddits type
+    # @option opts [any, link, self] :link_type (any) The type of posts allowed on this subreddit
+    # @option opts [true, false] :allow_top (true) Allow this subreddit to appear on the front page
+    # @option opts [true, false] :show_media (true) show thumbnails and media embeds
+    # @option opts [String] :header-title The header mouse-over text
+    # @option opts [true, false] :over_18 (false) If the subreddit requires over 18 access
     # @return (see #clear_sessions)
-    def subreddit_settings title, subreddit, description = nil, sidebar = nil, lang = en, type = 'public', post_type = 'any', allow_frontpage = true, show_media = true, header = nil, adult = false
+    def subreddit_settings subreddit, opts = {}
       logged_in?
       bool = [true, false]
-      raise ArgumentError, "type must be one of public, private, restricted, is #{type}" unless %w{public private restricted}.include?(type)
-      raise ArgumentError, "post_type must be one of any, link, self; is #{type}" unless %w{any link self}.include?(post_type)
-      raise ArgumentError, "allow_frontpage must be boolean" unless bool.include?(allow_frontpage)
-      raise ArgumentError, "show_media must be boolean" unless bool.include?(show_media)
-      raise ArgumentError, "adult must be boolean" unless bool.include?(adult)
-      params = {title: title, description: sidebar, public_description: description, lang: lang, type: type, link_type: post_type, allow_top: allow_frontpage, show_media: show_media, "header-title" => header, r: subreddit, uh: @modhash}
+      raise ArgumentError, "type must be one of public, private, restricted, is #{opts[:type]}" unless %w{public private restricted}.include?(opts[:type]) or opts[:type].nil?
+      raise ArgumentError, "post_type must be one of any, link, self; is #{opts[:link_type]}" unless %w{any link self}.include?(opts[:link_type]) or opts[:link_type].nil?
+      raise ArgumentError, "allow_frontpage must be boolean" unless bool.include?(opts[:allow_top]) or opts[:allow_top].nil?
+      raise ArgumentError, "show_media must be boolean" unless bool.include?(opts[:show_media]) or opts[:show_media].nil?
+      raise ArgumentError, "adult must be boolean" unless bool.include?(opts[:over_18]) or opts[:over_18].nil?
+      params = {
+        type: 'public',
+        link_type: 'any',
+        lang: 'en',
+        r: subreddit,
+        uh: @modhash,
+        allow_top: true,
+        show_media: true,
+        over_18: false,
+      }
+      params.merge! opts
       post('/api/site_admin', body: params)
     end
 
@@ -101,39 +111,37 @@ module Snoo
 
     # Get subreddits I have
     #
-    # @param condition [subscriber, contributor, moderator] The permission level to return subreddits from
-    # @param limit [1..100] The number of results to return
-    # @param after [String] Return subreddits *after* this id
-    # @param before [String] Return subreddits *before* this id
+    # @param (see LinksComments#info)
+    # @option opts [subscriber, contributor, moderator] :condition The permission level to return subreddits from
+    # @option opts [1..100] :limit The number of results to return
+    # @option opts [String] :after Return subreddits *after* this id
+    # @option opts [String] :before Return subreddits *before* this id
     # @return (see #clear_sessions)
-    def my_reddits condition = nil, limit = nil, after = nil, before = nil
+    def my_reddits opts = {}
       logged_in?
-      raise ArgumentError, "condition must be one of subscriber, contributor, moderator; is #{condition}" unless %w{subscriber contributor moderator}.include?(condition) or condition.nil?
-      raise ArgumentError, "limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
-      query = {}
-      query[:limit] = limit if limit
-      query[:after] = after if after
-      query[:before] = before if before
-      url = "/reddits/mine/%s.json" % (condition if condition)
+      raise ArgumentError, "condition must be one of subscriber, contributor, moderator; is #{opts[:condition]}" unless %w{subscriber contributor moderator}.include?(opts[:condition]) or opts[:condition].nil?
+      raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
+      url = "/reddits/mine/%s.json" % (opts[:condition] if opts[:condition])
+      opts.delete! :condition
+      query = ops
       get(url, query: query)
     end
 
     # Get a list of subreddits
     #
-    # @param condition [popular, new, banned] The type of subreddits to return
-    # @param limit [1..100] The number of results to return
-    # @param after [String] Return subreddits *after* this id.
-    # @param before [String] Return subreddits *before* this id.
+    # @param (see LinksComments#info)
+    # @option opts [popular, new, banned] :condition The type of subreddits to return
+    # @option opts [1..100] :limit The number of results to return
+    # @option opts [String] :after Return subreddits *after* this id.
+    # @option opts [String] :before Return subreddits *before* this id.
     # @return (see #clear_sessions)
-    def get_reddits condition = nil, limit = nil, after = nil, before = nil
-      raise ArgumentError, "condition must be one of popular, new, banned; is #{condition}" unless %w{popular new banned}.include?(condition) or condition.nil?
-      raise ArgumentError, "limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
+    def get_reddits opts = {}
+      raise ArgumentError, "condition must be one of popular, new, banned; is #{opts[:condition]}" unless %w{popular new banned}.include?(opts[:condition]) or opts[:condition].nil?
+      raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
 
-      url = "/reddits/%s.json" % (condition if condition)
-      query = {}
-      query[:limit] = limit if limit
-      query[:after] = after if after
-      query[:before] = before if before
+      url = "/reddits/%s.json" % (opts[:condition] if opts[:condition])
+      opts.delete! :condition
+      query = opts
 
       get(url, query: query)
     end
@@ -141,17 +149,16 @@ module Snoo
     # Search subreddits
     #
     # @param q [String] The search query
-    # @param limit [1..100] The number of results to return
-    # @param after [String] Return subreddits *after* this id.
-    # @param before [String] Return subreddits *before* this id.
+    # @param (see LinksComments#info)
+    # @option opts [1..100] :limit The number of results to return
+    # @option opts [String] :after Return subreddits *after* this id.
+    # @option opts [String] :before Return subreddits *before* this id.
     # @return (see #clear_sessions)
-    def search_reddits q, limit = nil, after = nil, before = nil
-      raise ArgumentError, "limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
+    def search_reddits q, opts = {}
+      raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
 
       query = {q: q}
-      query[:limit] = limit if limit
-      query[:after] = after if after
-      query[:before] = before if before
+      query.merge! opts
       get('/reddits/search.json', query: query)
     end
 

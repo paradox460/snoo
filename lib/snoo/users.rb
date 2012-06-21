@@ -39,22 +39,21 @@ module Snoo
     # Get a listing of user posts. Some options may be restricted
     #
     # @param (see #get_user_info)
-    # @param type [overview, submitted, commented, liked, disliked, hidden, saved]
-    # @param sort [new, hot, top, controversial] The sort order
-    # @param after [String] Return things *after* this id
-    # @param before [String] Return things *before* this id
-    # @param limit [1..100] Number of results to return
+    # @param (see LinksComments#info)
+    # @option opts [overview, submitted, comments, liked, disliked, hidden, saved] :type Type of post to return. Most users only allow the first 3 types.
+    # @option opts [new, hot, top, controversial] :sort The sort order
+    # @option opts [String] :after Return things *after* this id
+    # @option opts [String] :before Return things *before* this id
+    # @option opts [1..100] :limit Number of results to return
     # @return (see #clear_sessions)
-    def get_user_listing username, type = 'overview', sort = 'new', after = nil, before = nil, limit = nil
-      raise ArgumentError, "type must be one of overview, submitted, commented, liked, disliked, hidden, saved; is #{type}" unless %w{overview submitted commented liked disliked hidden saved}.include?(type)
-      raise ArgumentError, "sort must be one of new, hot, top, controversial; is #{sort}" unless %w{new hot top controversial}.include?(sort)
-      raise ArgumentError, "limit must be within 1..100; is #{limit}" unless (1..100).include?(limit) or limit.nil?
-      query = {}
-      query[:sort] = sort if sort != 'new'
-      query[:after] = after if after
-      query[:before] = before if before
-      query[:limit] = limit if limit
-      get("/user/%s%s.json" % [username, ('/' + type if type != overview)])
+    def get_user_listing username, opts = {}
+      raise ArgumentError, "type is invalid" unless %w{overview submitted commented liked disliked hidden saved}.include?(opts[:type]) or opts[:type].nil?
+      raise ArgumentError, "sort is invalid" unless %w{new hot top controversial}.include?(opts[:sort]) or opts[:type].nil?
+      raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
+      url = "/user/%s%s.json" % [username, ('/' + opts[:type] if opts[:type] != 'overview')]
+      opts.delete! :type
+      query = opts
+      get(url, query: query)
     end
   end
 end

@@ -46,23 +46,23 @@ module Snoo
     # Gets a listing of PMs
     #
     # @param where [inbox, unread, sent] Where to get messages from
-    # @param mark [true, false] Mark the messages requested as read?
-    # @param limit [1..100] The total number of messages to get
-    # @param before [String] Get all comments *before* this id
-    # @param after [String] Get all comments *after* this
+    # @param (see LinksComments#info)
+    # @option opts [true, false] :mark (false) Mark the messages requested as read?
+    # @option opts [1..100] :limit The total number of messages to get
+    # @option opts [String] :before Get all comments *before* this id
+    # @option opts [String] :after Get all comments *after* this
     # @return (see #clear_sessions)
-    def get_messages where, mark = false, limit = nil, before = nil, after = nil
+    def get_messages where = "inbox", opts = {},
       bools = [true, false]
       wheres = %w{inbox unread sent}
       raise ArgumentError, "where must be #{wheres * ', '}, is #{where}" unless wheres.include?(where)
-      raise ArgumentError, "mark must be boolean, is #{mark}" unless bools.include?(mark)
-      raise ArgumentError, "limit must be 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise ArgumentError, "mark must be boolean, is #{opts[:mark]}" unless bools.include?(opts[:mark]) or opts[:mark].nil?
+      raise ArgumentError, "limit must be 1..100, is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
 
-      query = {}
-      query[:mark] = mark if mark
-      query[:limit] = limit if limit
-      query[:before] = before if before
-      query[:after] = after if after
+      query = {
+        mark: false
+      }
+      query.merge! opts
       get("/message/#{where}.json", query: query)
     end
   end

@@ -7,60 +7,53 @@ module Snoo
     # Get a comment listing from the site
     #
     # @param link_id [String] The link id of the comment thread. Must always be present
-    # @param comment_id [String] The parent comment of a thread.
-    # @param context [Fixnum] The context of the thread, that is, how far above the `comment_id` to return
-    # @param limit [Fixnum] The total number of comments to return. If you have gold this can include the whole thread, but is buggy. Recommend no more than 1000
-    # @param depth [Fixnum] How deep to render a comment thread.
-    # @param sort [old, new, hot, top, controversial, best] The sort used.
+    # @param (see LinksComments#info)
+    # @option opts [String] :comment_id The parent comment of a thread.
+    # @option opts [Fixnum] :context The context of the thread, that is, how far above the `comment_id` to return
+    # @option opts [Fixnum] :limit (100) The total number of comments to return. If you have gold this can include the whole thread, but is buggy. Recommend no more than 1000
+    # @option opts [Fixnum] :depth How deep to render a comment thread.
+    # @option opts [old, new, hot, top, controversial, best] :sort The sort used.
     # @return (see #clear_sessions)
-    def get_comments link_id, comment_id = nil, context = nil, limit = 100, depth = nil, sort = nil
+    def get_comments link_id, opts = {}
       sorts = %w{old new hot top controversial best}
-      raise ArgumentError, "sort cannot be #{sort}" unless sorts.include?(sort) or sort.nil?
-      query = {}
-      query[:context] = context if context
-      query[:limit] = limit if limit
-      query[:depth] = depth if depth
-      query[:sort] = sort if sort
-      url = "/comments/%s%s.json" % [link_id, ('/' + comment_id if comment_id)]
+      raise ArgumentError, "sort cannot be #{sort}" unless sorts.include?(opts[:sort]) or opts[:sort].nil?
+      query = { limit: 100 }
+      query.merge! opts
+      url = "/comments/%s%s.json" % [link_id, ('/' + opts[:comment_id] if opts[:comment_id])]
       get(url, query: query)
     end
 
     # Gets a listing of links from reddit.
     #
-    # @param subreddit [String] The subreddit targeted. Can be psuedo-subreddits like `all` or `mod`
-    # @param page [new, controversial, top] The page to view.
-    # @param sort [new, rising] The sorting method. Only relevant on the `new` page
-    # @param time [hour, day, week, month, year] The timeframe. Only relevant on some pages, such as `top`. Leave empty for all time
-    # @param limit [1..100] The number of things to return.
-    # @param after [String] Get things *after* this thing id
-    # @param before [String] Get things *before* this thing id
+    # @param (see LinksComments#info)
+    # @option opts [String] :subreddit The subreddit targeted. Can be psuedo-subreddits like `all` or `mod`. If blank, the front page
+    # @option opts [new, controversial, top] :page The page to view.
+    # @option opts [new, rising] :sort The sorting method. Only relevant on the `new` page
+    # @option opts [hour, day, week, month, year] :t The timeframe. Only relevant on some pages, such as `top`. Leave empty for all time
+    # @option opts [1..100] :limit The number of things to return.
+    # @option opts [String] :after Get things *after* this thing id
+    # @option opts [String] :before Get things *before* this thing id
     # @return (see #clear_sessions)
-    def get_listing subreddit = nil, page = nil, sort = nil, time = nil, limit = nil, after = nil, before = nil
+    def get_listing opts = {}
       pages = %w{new controversial top}
       sorts = %w{new rising}
       times = %w{hour day week month year}
       # Invalid Page
-      raise ArgumentError, "page must be #{pages * ', '}, is #{page}" unless pages.include?(page) or page.nil?
+      raise ArgumentError, "page must be #{pages * ', '}, is #{opts[:page]}" unless pages.include?(opts[:page]) or opts[:page].nil?
       # Invalid Sort
-      raise ArgumentError, "sort must be one of #{sorts * ', '}, is #{sort}" unless sorts.include?(sort) or sort.nil?
+      raise ArgumentError, "sort must be one of #{sorts * ', '}, is #{opts[:sort]}" unless sorts.include?(opts[:sort]) or opts[:sort].nil?
       # Sort on useless page
-      raise ArgumentError, "sort can only be used on page = 'new'" if page != 'new' && sort
+      raise ArgumentError, "sort can only be used on page = 'new'" if opts[:page] != 'new' && opts[:sort]
       # Invalid time
-      raise ArgumentError, "time can only be one of #{times * ', '}, is #{time}" unless times.include?(time) or time.nil?
+      raise ArgumentError, "time can only be one of #{times * ', '}, is #{opts[:time]}" unless times.include?(opts[:time]) or opts[:time].nil?
       # Invalid limit
-      raise ArgumentError, "limit cannot be outside 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
+      raise ArgumentError, "limit cannot be outside 1..100, is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
 
       # Build the basic url
-      url = "%s/%s.json" % [('/r/' + subreddit if subreddit ), (page if page)]
-      # Assemble the query
-      query = {}
-
-      query[:sort] = sort if sort
-      query[:t] = time if time
-      query[:limit] = limit if limit
-      query[:after] = after if after
-      query[:before] = before if before
-
+      url = "%s/%s.json" % [('/r/' + opts[:subreddit] if opts[:subreddit] ), (opts[:page] if opts[:page])]
+      # Delete subreddit and page from the hash, they dont belong in the query
+      [:subreddit, :page].each {|k| opts.delete k}
+      query = opts
       # Make the request
       get(url, query: query)
     end
@@ -68,33 +61,27 @@ module Snoo
     # Search reddit
     #
     # @param query [String] The search query.
-    # @param restrict_subreddit [true, false] Restrict to the calling subreddit
-    # @param subreddit [String] The calling subreddit.
-    # @param limit [1..100] The amount of results to return
-    # @param before [String] Return things *before* this id
-    # @param after [String] Return things *after* this id
-    # @param sort [relevance, new, top] The sorting of the results.
-    # @param syntax [cloudsearch, lucene] The search syntax.
+    # @param (see LinksComments#info)
+    # @option opts [true, false] :restrict_sr Restrict to the calling subreddit
+    # @option opts [String] :subreddit The calling subreddit.
+    # @option opts [1..100] :limit The amount of results to return
+    # @option opts [String] :before Return things *before* this id
+    # @option opts [String] :after Return things *after* this id
+    # @option opts [relevance, new, top] :sort The sorting of the results.
+    # @option opts [cloudsearch, lucene] :syntax The search syntax.
     # @return (see #clear_sessions)
-    def search query, restrict_subreddit = false, subreddit = nil, limit = nil, before = nil, after = nil, sort = nil, syntax = 'lucene'
-      raise ArgumentError, 'restrict_subreddit needs to be boolean' unless [true, false].include?(restrict_subreddit)
-      raise ArgumentError, "limit needs to be 1..100, is #{limit}" unless (1..100).include?(limit) or limit.nil?
-      raise ArgumentError, "sort needs to be one of relevance, new, top, is #{sort}" unless %w{relevance new top}.include?(sort) or sort.nil?
-      raise ArgumentError, "syntax needs to be one of cloudsearch, lucene; is #{syntax}" if %w{cloudsearch lucene}.include?(syntax)
+    def search query, opts = {}
+      raise ArgumentError, 'restrict_subreddit needs to be boolean' unless [true, false].include?(opts[:restrict_sr])
+      raise ArgumentError, "limit needs to be 1..100, is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
+      raise ArgumentError, "sort needs to be one of relevance, new, top, is #{opts[:sort]}" unless %w{relevance new top}.include?(opts[:sort]) or opts[:sort].nil?
+      raise ArgumentError, "syntax needs to be one of cloudsearch, lucene; is #{opts[:syntax]}" if %w{cloudsearch lucene}.include?(opts[:syntax])
 
       # This supports searches with and without a subreddit
-      url = "%s/search.json" % (subreddit if subreddit)
+      url = "%s/search.json" % (opts[:subreddit] if opts[:subreddit])
 
       # Construct the query
-      httpquery = {
-        q: query
-      }
-      httpquery[:restrict_sr] = (restrict_subreddit ? "on" : "off")
-      httpquery[:limit] = limit if limit
-      httpquery[:before] = before if before
-      httpquery[:after] = after if after
-      httpquery[:sort] = sort if sort
-      httpquery[:syntax] = syntax if syntax != 'lucene'
+      httpquery = {q: query}
+      httpquery.merge! opts
 
       get(url, query: httpquery)
     end

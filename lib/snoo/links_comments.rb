@@ -45,17 +45,16 @@ module Snoo
     # Get a listing of things which have the provided URL.
     # You can use a plain url, or a reddit link id to get reposts of said link
     # @note Using {Listings#search} is probably better for url lookups
-    # @note You do not have to be logged in to use this
     #
-    # @param id [String] The id of a reddit thing to look up. Specify either this or a url, not both
-    # @param url [String] The url to search for matching things. Specify either this or an id, not both
-    # @param limit [Fixnum] The number of things to return. Go too high and the API will ignore you
+    # @param opts [Hash] An options hash
+    # @option opts [String] :id The id of a reddit thing to look up. Specify either this or a url, not both
+    # @option opts [String] :url The url to search for matching things. Specify either this or an id, not both
+    # @option opts [Fixnum] :limit The number of things to return. Go too high and the API will ignore you
     # @return (see #clear_sessions)
-    def info id = nil, url = nil, limit = 100
-      raise ArgumentError, 'url or id, not both' if id && url
-      query = { limit: limit }
-      query[:id] = id if id
-      query[:url] = url if url
+    def info opts = {}
+      raise ArgumentError, 'url or id, not both' if opts[:id] && opts[:url]
+      query = { limit: 100 }
+      query.merge! opts
       get('/api/info.json', query: query)
     end
 
@@ -90,20 +89,20 @@ module Snoo
     #
     # @param title [String] Title of the post
     # @param subreddit [String] The subreddit in which we are posting
-    # @param url [String] The url for the post. If this is specified, it will not be a self post, and `text` will be ignored
-    # @param text [String] The self-post text. Can be formatted in markdown
+    # @param (see #info)
+    # @option opts [String] :url The url for the post. If this is specified, it will not be a self post, and `text` will be ignored
+    # @option opts [String] :text The self-post text. Can be formatted in markdown
     # @return (see #clear_sessions)
-    def submit title, subreddit, url = nil, text = nil
+    def submit title, subreddit, opts = {}
       logged_in?
-      raise ArgumentError, 'url or text, not both' if url && text
+      raise ArgumentError, 'url or text, not both' if opts[:url] && opts[:text]
       post = {
         title: title,
         sr: subreddit,
-        uh: @modhash
+        uh: @modhash,
+        kind: (opts[:url] ? "link" : "self")
       }
-      post[:kind] = (url ? "link" : "self")
-      post[:url] = url if url
-      post[:text] = text if text
+      post.merge! opts
       post('/api/submit', body: post)
     end
 
