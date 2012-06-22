@@ -105,7 +105,7 @@ module Snoo
     # @return (see #clear_sessions)
     def get_flair_list subreddit, opts = {}
       logged_in?
-      raise ArgumentError, 'limit is too high/low' unless (1..1000).include?(opts[:limit])
+      raise ArgumentError, 'limit is too high/low' unless (1..1000).include?(opts[:limit]) or opts[:limit].nil?
       query = {
         limit: 1000,
         uh: @modhash
