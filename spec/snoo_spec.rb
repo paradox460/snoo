@@ -1,12 +1,10 @@
 require 'snoo'
+require_relative 'auth'
 
 describe Snoo::Client do
   before :all do
       @client = Snoo::Client.new
       @client.log_in $testuser, $testpass
-  end
-  after :each do
-    sleep 2
   end
 
   describe "#new" do
@@ -75,7 +73,6 @@ describe Snoo::Client do
       it "sets user flair on this user" do
         flair = @client.flair $testreddit, css_class: "test", text: "test", name: $testuser
         flair.code.should eq 200
-        flair['jquery'][16][3][0].should eq 'saved'
       end
     end
 
@@ -86,7 +83,9 @@ describe Snoo::Client do
     end
 
     describe "#get_flair_list" do
-      @client.get_flair_list($testreddit).code.should eq 200
+      it "should get a list of flair" do
+        @client.get_flair_list($testreddit).code.should eq 200
+      end
     end
   end
 
@@ -94,7 +93,7 @@ describe Snoo::Client do
     after :each do
       sleep 2
     end
-    describe "#get_listing"
+    describe "#get_listing" do
       it "gets a listing of links from reddit" do
         listing = @client.get_listing subreddit: $testreddit
         listing.code.should eq 200
@@ -147,7 +146,7 @@ describe Snoo::Client do
 
     describe "#get_user_listing" do
       it "should get a listing of user's posts" do
-        listing = @client
+        listing = @client.get_user_listing $testuser
         listing.code.should eq 200
       end
     end
