@@ -91,11 +91,67 @@ describe Snoo::Client do
   end
 
   describe "Listings" do
-    
-
+    after :each do
+      sleep 2
+    end
+    describe "#get_listing"
+      it "gets a listing of links from reddit" do
+        listing = @client.get_listing subreddit: $testreddit
+        listing.code.should eq 200
+      end
+    end
+    describe "#search" do
+      it "searches reddit for 'test'" do
+        search = @client.search 'test'
+        search.code.should eq 200
+      end
+    end
   end
 
+  describe "Private Messages" do
+    after :each do
+      sleep 2
+    end
+    describe "#send_pm" do
+      it "should send a private message to current user" do
+        send = @client.send_pm $testuser, 'test', 'testing'
+        send.code.should eq 200
+      end
+    end
+    describe "#get_messages" do
+      it "should get a list of private messages" do
+        messages = @client.get_messages
+        messages.code.should eq 200
+      end
+    end
+  end
 
+  describe "User" do
+    after :each do
+      sleep 2
+    end
+
+    describe "#get_friends" do
+      it "should get a list of friends" do
+        friends = @client.get_friends
+        friends.code.should eq 200
+      end
+    end
+
+    describe "#get_user_info" do
+      it "should get information about the current user account" do
+        info = @client.get_user_info $testuser
+        info.code.should eq 200
+      end
+    end
+
+    describe "#get_user_listing" do
+      it "should get a listing of user's posts" do
+        listing = @client
+        listing.code.should eq 200
+      end
+    end
+  end
 
   describe "#log_out" do
     it "logs out and sets instance variables to nil" do
