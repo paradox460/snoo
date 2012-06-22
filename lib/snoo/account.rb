@@ -26,6 +26,7 @@ module Snoo
       cookies nil
       @modhash = nil
       @userid = nil
+      @username = nil
     end
 
     # Invalidates all other reddit session cookies, and updates the current one.
@@ -60,10 +61,10 @@ module Snoo
     end
 
     # Gets info about the currently logged in user.
-    # @return [Hash] Parsed JSON from reddit
+    # @return (see #clear_sessions)
     def me
       logged_in?
-      get("/api/me.json").body
+      get("/api/me.json")
     end
 
     # Changes the current user's password/email.

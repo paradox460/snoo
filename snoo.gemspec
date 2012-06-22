@@ -14,8 +14,12 @@ Gem::Specification.new do |gem|
   gem.name          = "snoo"
   gem.require_paths = ["lib"]
   gem.version       = Snoo::VERSION
+  gem.required_ruby_version = '>= 1.9'
 
   ['httparty'].each do |dependency|
     gem.add_runtime_dependency dependency
+  end
+  ['rspec'].each do |dependency|
+    gem.add_development_dependency dependency
   end
 end

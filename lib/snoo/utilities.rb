@@ -24,14 +24,14 @@ module Snoo
       #
       # @param cookie [String] The cookie text, as show in a 'set-cookie' header
       def cookies cookie
-        @cookies = cookie
+        @cookie = cookie
         self.class.headers 'Cookie' => cookie
       end
 
       # Raises an error if we aren't currently logged in
       #
       def logged_in?
-        raise NotAuthenticated if @cookies.nil? or @modhash.nil?
+        raise NotAuthenticated if @cookie.nil? or @modhash.nil?
       end
 
       # Posts to '/api/friend'. This method exists because there are tons of things that use this
