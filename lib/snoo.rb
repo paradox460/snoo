@@ -19,7 +19,9 @@ module Snoo
     attr_reader(:modhash, :username, :userid, :cookie)
 
 
-    # Creates a new instance of Snoo
+    # Creates a new instance of Snoo.
+    #
+    # Please change the useragent if you write your own program.
     #
     # @param url [String] url The base url of reddit.
     # @param useragent [String] The User-Agent this bot will use.
