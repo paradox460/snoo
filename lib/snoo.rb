@@ -35,4 +35,3 @@ module Snoo
     end
   end
 end
-

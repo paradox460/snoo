@@ -145,18 +145,17 @@ module Snoo
     # Select a flair template and apply it to a user or link
     #
     # @param template_id [String] The template id to apply. Get this from {#flair_template_list}
-    # @param text [String] The flair text
     # @param subreddit [String] The subreddit targeted.
     # @param (see LinksComments#info)
     # @option opts [String] :link The link id to apply to
     # @option opts [String] :user The username to apply flair to
+    # @option opts [String] :text The flair text
     # @return (see #clear_sessions)
-    def select_flair_template template_id, text, subreddit, opts = {}
+    def select_flair_template template_id, subreddit, opts = {}
       logged_in?
-      raise ArgumentError, 'link or user, not both' if link && user
+      raise ArgumentError, 'link or user, not both' if opts[:link] && opts[:user]
       params = {
         flair_template_id: template_id,
-        text: text,
         uh: @modhash,
         r: subreddit
       }
