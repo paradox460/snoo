@@ -1,0 +1,27 @@
+# Batch size, cannot go above 100
+limit: 100
+# Login details
+username: flair-o-tron
+password: 
+# Logging
+logging: false
+# Uncomment the following line to enable logging to file
+# logfile: /home/paradox/ruby/log/flair.log
+# Log rotation
+logrotate: weekly
+# Your subreddits
+# Just copy and paste what you see
+subreddits:
+  thewalkingdead:
+    'comic.spoiler':
+      ignore_case: true
+      id: 'e9452e44-846f-11e1-994b-12313d2c1af1'
+    '[(show)(tv)].spoiler':
+      ignore_case: true
+      id: 'ed8c5612-846f-11e1-837a-12313b08a511'
+  breakingbad:
+    'spoiler':
+      ignore_case: true
+      id: '083ccbc2-ce0d-11e1-85b5-12313b0c247a'
+
+
