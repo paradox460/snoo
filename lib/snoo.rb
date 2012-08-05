@@ -12,26 +12,30 @@ module Snoo
   # @author (see Snoo)
   class Client
     include HTTParty
-    [Account, Flair, LinksComments, Listings, Moderation, PM, Utilities, User, Subreddit].each do |inc|
+    [Utilities,  Account, Flair, LinksComments, Listings, Moderation, PM, User, Subreddit].each do |inc|
       include inc
     end
 
-    attr_reader(:modhash, :username, :userid, :cookies)
+    attr_reader(:username, :userid, :cookies)
+    attr_accessor(:modhash)
 
 
     # Creates a new instance of Snoo.
     #
     # Please change the useragent if you write your own program.
     #
-    # @param url [String] url The base url of reddit.
-    # @param useragent [String] The User-Agent this bot will use.
-    def initialize( url = "http://www.reddit.com", useragent = "Snoo ruby reddit api wrapper v#{VERSION}" )
-      @baseurl = url
-      self.class.base_uri url
-      @headers = {'User-Agent' => useragent }
+    # @param opts [Hash] An options hash
+    # @option opts [String] :url The reddit url
+    # @option opts [String] :useragent ("Snoo ruby reddit api wrapper v#{VERSION}") The useragent
+    # @option opts [String] :cookies The cookies sent in the header
+    # @option opts [String] :modhash The userauth modhash
+    def initialize opts={}
+      @baseurl = opts[:url] || "http://www.reddit.com"
+      self.class.base_uri @baseurl
+      @headers = {'User-Agent' => (opts[:useragent] || "Snoo ruby reddit api wrapper v#{VERSION}")}
       self.class.headers @headers
-      @cookies = nil
-      @modhash = nil
+      set_cookies = opts[:cookies] || nil
+      @modhash = opts[:modhash] || nil
     end
   end
 end
