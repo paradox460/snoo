@@ -36,6 +36,12 @@ module Snoo
       self.class.headers @headers
       set_cookies = opts[:cookies] || nil
       @modhash = opts[:modhash] || nil
+
+      if @cookies and @modhash
+        myinfo = get("/api/me.json")
+        @username = myinfo['data']['name']
+        @userid = 't2_' + myinfo['data']['id']
+      end
     end
   end
 end
