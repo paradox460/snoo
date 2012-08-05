@@ -16,7 +16,7 @@ module Snoo
       include inc
     end
 
-    attr_reader(:modhash, :username, :userid, :cookie)
+    attr_reader(:modhash, :username, :userid, :cookies)
 
 
     # Creates a new instance of Snoo.

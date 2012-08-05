@@ -31,7 +31,7 @@ module Snoo
       # Raises an error if we aren't currently logged in
       #
       def logged_in?
-        raise NotAuthenticated if @cookie.nil? or @modhash.nil?
+        raise NotAuthenticated if @cookies.nil? or @modhash.nil?
       end
 
       # Posts to '/api/friend'. This method exists because there are tons of things that use this
