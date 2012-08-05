@@ -1,9 +1,17 @@
 module Snoo
   # Utility functions.
-  # These are all private
   #
   # @author (see Snoo)
   module Utilities
+
+    # Set the cookie header and instance variable
+    #
+    # @param cookie [String] The cookie text, as show in a 'set-cookie' header
+    def set_cookies cookie
+      @cookies = cookie
+      self.class.headers 'Cookie' => cookie
+    end
+
     private
       # HTTParty get wrapper. This serves to clean up code, as well as throw webserver errors wherever needed
       #
@@ -19,13 +27,6 @@ module Snoo
         response = self.class.post *args, &block
         raise WebserverError, response.code unless response.code == 200
         response
-      end
-      # Set the cookie header and instance variable
-      #
-      # @param cookie [String] The cookie text, as show in a 'set-cookie' header
-      def set_cookies cookie
-        @cookies = cookie
-        self.class.headers 'Cookie' => cookie
       end
 
       # Raises an error if we aren't currently logged in
