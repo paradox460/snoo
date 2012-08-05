@@ -23,8 +23,8 @@ module Snoo
       # Set the cookie header and instance variable
       #
       # @param cookie [String] The cookie text, as show in a 'set-cookie' header
-      def cookies cookie
-        @cookie = cookie
+      def set_cookies cookie
+        @cookies = cookie
         self.class.headers 'Cookie' => cookie
       end
 

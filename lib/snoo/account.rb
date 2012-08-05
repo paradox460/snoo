@@ -13,7 +13,7 @@ module Snoo
       login = post("/api/login", :body => {user: username, passwd: password, api_type: 'json'})
       errors = login['json']['errors']
       raise errors[0][1] unless errors.size == 0
-      cookies login.headers['set-cookie']
+      set_cookies login.headers['set-cookie']
       @modhash = login['json']['data']['modhash']
       @username = username
       @userid = 't2_' + get('/api/me.json')['data']['id']
@@ -23,7 +23,7 @@ module Snoo
     # Logs out of a reddit account. This is usually uneeded, you can just log_in as a new account to replace the current one.
     # This just nils the cookies and modhash
     def log_out
-      cookies nil
+      set_cookies nil
       @modhash = nil
       @userid = nil
       @username = nil
@@ -38,7 +38,7 @@ module Snoo
     def clear_sessions password
       logged_in?
       clear = post('/api/clear_sessions', body: { curpass: password, dest: @baseurl, uh: @modhash })
-      cookies clear.headers['set-cookie']
+      set_cookies clear.headers['set-cookie']
       return clear
     end
 
@@ -85,7 +85,7 @@ module Snoo
         }
       params[:email] = email if email
       update = post('/api/update', body: params )
-      cookies update.headers['set-cookie']
+      set_cookies update.headers['set-cookie']
       return update
     end
   end
