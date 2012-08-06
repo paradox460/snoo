@@ -20,6 +20,18 @@ module Snoo
       return login
     end
 
+    # Auth into reddit via modhash and cookie. This has the advantage of not throttling you if you call it a lot
+    #
+    # @param modhash [String] The modhash to use
+    # @param cookies [String] The cookies string to give to the header
+    def auth modhash, cookies
+      set_cookies cookies
+      @modhash = modhash
+      meinfo = get("/api/me.json")
+      @username = meinfo['data']['name']
+      @userid = 't2_' + meinfo['data']['id']
+    end
+
     # Logs out of a reddit account. This is usually uneeded, you can just log_in as a new account to replace the current one.
     # This just nils the cookies and modhash
     def log_out

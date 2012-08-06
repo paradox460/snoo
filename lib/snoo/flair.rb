@@ -42,7 +42,7 @@ module Snoo
     # @param opts [Hash] An options hash.
     # @option opts [String] :css_class The class(es) applied to the flair. Whitespace separated
     # @option opts [String] :text The flair text
-    # @option opts [String] :name The user who we are flairing. This requires a username.r
+    # @option opts [String] :name The user who we are flairing. This requires a username
     # @option opts [String] :link The thing id of the link (if a link). Begins with `t3_`
     # @return (see #clear_sessions)
     def flair subreddit, opts = {}
