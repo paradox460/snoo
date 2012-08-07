@@ -1,4 +1,5 @@
 require 'httparty'
+require 'nokogiri'
 
 %w{version exceptions utilities account flair links_comments listings moderation pms subreddits users}.each do |local|
   require "snoo/#{local}"

@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 1.9'
   gem.license       = 'MIT'
 
-  ['httparty'].each do |dependency|
+  ['httparty', 'nokogiri'].each do |dependency|
     gem.add_runtime_dependency dependency
   end
   ['rspec'].each do |dependency|

@@ -57,5 +57,43 @@ module Snoo
       post('/api/remove', body: {id: id, spam: spam, uh: @modhash})
     end
 
+    # Gets a moderation log
+    # This is a tricky function, and may break a lot.
+    # Blame the lack of a real api
+    #
+    # @param subreddit [String] The subreddit to fetch from
+    # @param opts [Hash] Options to pass to reddit
+    # @option opts [Fixnum] :count (100) The number to get. Can't be higher than 100
+    # @option opts [String] :before The "fullname" to fetch before.
+    # @option opts [String] :after The "fullname" to fetch after.
+    # @option opts [String] :type See [reddit API docs](http://www.reddit.com/dev/api#GET_moderationlog)
+    # @option opts [String] :mod The moderator to get. Name, not ID
+    # @return [Hash] A hash consisting of the data, first fullname, last fullname, first date, and last date
+    def modlog subreddit, opts = {}
+      logged_in?
+      options = {
+        count: 100
+      }.merge opts
+      data = Nokogiri::HTML.parse(get("/r/#{subreddit}/about/log", query: options).body).css('.modactionlisting tr')
+      processed = {
+        data:       [],
+        first:      data[0]['data-fullname'],
+        first_date: Time.parse(data[0].children[0].child['datetime']),
+        last:       data[-1]['data-fullname'],
+        last_date:  Time.parse(data[-1].children[0].child['datetime'])
+      }
+      data.each do |tr|
+
+        processed[:data] << {
+          fullname:     tr['data-fullname'],
+          time:         Time.parse(tr.children[0].child['datetime']),
+          author:       tr.children[1].child.content,
+          action:       tr.children[2].child['class'].split[1],
+          description:  tr.children[3].content
+        }
+      end
+        return processed
+    end
+
   end
 end
