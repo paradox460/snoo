@@ -63,16 +63,16 @@ module Snoo
     #
     # @param subreddit [String] The subreddit to fetch from
     # @param opts [Hash] Options to pass to reddit
-    # @option opts [Fixnum] :count (100) The number to get. Can't be higher than 100
+    # @option opts [Fixnum] :limit (100) The number to get. Can't be higher than 100
     # @option opts [String] :before The "fullname" to fetch before.
-    # @option opts [String] :after The "fullname" to fetch after.
+    # @option opts [String] :after The "fullname" to fetch after (older than).
     # @option opts [String] :type See [reddit API docs](http://www.reddit.com/dev/api#GET_moderationlog)
     # @option opts [String] :mod The moderator to get. Name, not ID
     # @return [Hash] A hash consisting of the data, first fullname, last fullname, first date, and last date
-    def modlog subreddit, opts = {}
+    def get_modlog subreddit, opts = {}
       logged_in?
       options = {
-        count: 100
+        limit: 100
       }.merge opts
       data = Nokogiri::HTML.parse(get("/r/#{subreddit}/about/log", query: options).body).css('.modactionlisting tr')
       processed = {
@@ -93,6 +93,22 @@ module Snoo
         }
       end
         return processed
+    end
+
+    # Get the modqueue, or a subset of it (dear god)
+    #
+    # @param subreddit [String] The subreddit to fetch from
+    # @param opts [Hash] The options hash to pass to reddit
+    # @option opts [Fixnum] :limit (100) The total items to return. Can't go higher than 100
+    # @option opts [String] :before The thing_id to fetch before (newer than). Can be either a link (t3_) or comment (t1_)
+    # @option opts [String] :after The thing_id to fetch after (older than). Can be either a link (t3_) or comment (t1_)
+    def get_modqueue subreddit, opts={}
+      logged_in?
+      options = {
+        limit: 100
+      }.merge opts
+
+      get("/r/#{subreddit}/about/modqueue.json", query: options)
     end
 
   end
