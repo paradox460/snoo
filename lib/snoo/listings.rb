@@ -77,10 +77,11 @@ module Snoo
       raise ArgumentError, "syntax needs to be one of cloudsearch, lucene; is #{opts[:syntax]}" if %w{cloudsearch lucene}.include?(opts[:syntax])
 
       # This supports searches with and without a subreddit
-      url = "%s/search.json" % (opts[:subreddit] if opts[:subreddit])
+      url = "%s/search.json" % ('/r/' + opts[:subreddit] if opts[:subreddit])
 
       # Construct the query
       httpquery = {q: query}
+      opts.delete :subreddit
       httpquery.merge! opts
 
       get(url, query: httpquery)

@@ -1,4 +1,4 @@
 module Snoo
   # The version string (duh)
-  VERSION = "0.0.5"
+  VERSION = "0.0.6"
 end
