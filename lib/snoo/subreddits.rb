@@ -122,8 +122,8 @@ module Snoo
       raise ArgumentError, "condition must be one of subscriber, contributor, moderator; is #{opts[:condition]}" unless %w{subscriber contributor moderator}.include?(opts[:condition]) or opts[:condition].nil?
       raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
       url = "/reddits/mine/%s.json" % (opts[:condition] if opts[:condition])
-      opts.delete! :condition
-      query = ops
+      opts.delete :condition
+      query = opts
       get(url, query: query)
     end
 
@@ -140,7 +140,7 @@ module Snoo
       raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
 
       url = "/reddits/%s.json" % (opts[:condition] if opts[:condition])
-      opts.delete! :condition
+      opts.delete :condition
       query = opts
 
       get(url, query: query)
