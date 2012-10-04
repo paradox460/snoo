@@ -59,30 +59,28 @@ module Snoo
 
     # Configures flair options for a subreddit. All options are required
     #
-    # @param enabled [true, false] Flair enabled?
-    # @param position [left, right] Position of user flair.
-    # @param self_assign [true, false] Allow users to assign their own flair from templates
-    # @param link_position [none, left, right] The position of link flair. Set to `none` to disable
-    # @param link_assign [true, false] Allow a submitter to assign their own link flair
     # @param subreddit [String] The subreddit targeted.
+    # @param opts [Hash] An options hash
+    # @option opts [true, false] :flair_enabled (true) Flair enabled?
+    # @option opts [left, right] :flair_position ('right') Position of user flair.
+    # @option opts [true, false] :flair_self_assign_enabled (false) Allow users to assign their own flair from templates
+    # @option opts [none, left, right] :link_flair_position ('right') The position of link flair. Set to `none` to disable
+    # @option opts [true, false] :link_flair_self_assign_enabled (false) Allow a submitter to assign their own link flair
     # @return (see #clear_sessions)
-    def flair_config enabled, position, self_assign, link_position, link_assign, subreddit
+    def flair_config subreddit, opts = {}
       logged_in?
-      # Test the params
-      tests = [true, false]
-      raise "parameter error" unless tests.include?(enabled) && tests.include?(self_assign) && tests.include?(link_assign)
-      tests << "none"
-      raise "parameter error" unless tests.include?(link_position)
-
-      post('/api/flairconfig', body: {
-        flair_enabled: enabled,
-        flair_position: position,
-        flair_self_assign_enabled: self_assign,
-        link_flair_position: link_position,
-        link_flair_self_assign_enabled: link_assign,
+      options = {
+        flair_enabled: true,
+        flair_position: 'right',
+        flair_self_assign_enabled: false,
+        link_flair_position: 'right',
+        link_flair_self_assign_enabled: false,
         uh: @modhash,
         r: subreddit
-        })
+      }
+      options.merge! opts
+
+      post('/api/flairconfig', body: options)
     end
 
     # Post flair in a CSV file to reddit
@@ -116,29 +114,28 @@ module Snoo
 
     # Create or edit a flair template.
     #
-    # @param css_class [String] The list of css classes applied to this style, space separated
-    # @param type [USER_FLAIR, LINK_FLAIR] The type of flair template.
-    # @param text [String] The flair template's text.
-    # @param user_editable [true, false] If the templ
     # @param subreddit [String] The subreddit targeted.ate allows users to specify their own text
-    # @param template_id [String] The flair template ID, for editing. Get this from {#flair_template_list}
+    # @param opts [Hash] An options hash
+    # @option opts [String] css_class The list of css classes applied to this style, space separated
+    # @option opts [USER_FLAIR, LINK_FLAIR] flair_type ('USER_FLAIR') The type of flair template.
+    # @option opts [String] text The flair template's text.
+    # @option opts [true, false] text_editable (false) If the user is allowed to edit their flair text
+    # @option opts [String] template_id The flair template ID, for editing.
     # @return (see #clear_sessions)
-    def flair_template css_class, type, text, user_editable, subreddit, template_id = nil
+    def flair_template subreddit, opts = {}
       logged_in?
-      test = ['USER_FLAIR', 'LINK_FLAIR']
-      raise ArgumentError, 'type is either USER_FLAIR or LINK_FLAIR' unless test.include?(type)
-      test = [true, false]
-      raise ArgumentError, 'user_editable needs to be true or false' unless test.include?(user_editable)
-
       params = {
-        css_class: css_class,
-        flair_type: type,
-        text: text,
-        text_editable: user_editable,
+        flair_type: 'USER_FLAIR',
+        text_editable: false,
         uh: @modhash,
         r: subreddit
       }
-      params[:flair_template_id] = template_id if template_id
+      params.merge! opts
+      test = ['USER_FLAIR', 'LINK_FLAIR']
+      raise ArgumentError, 'type is either USER_FLAIR or LINK_FLAIR' unless test.include?(params[:flair_type])
+      test = [true, false]
+      raise ArgumentError, 'user_editable needs to be true or false' unless test.include?(params[:text_editable])
+
       post('/api/flairtemplate', body: params)
     end
 
