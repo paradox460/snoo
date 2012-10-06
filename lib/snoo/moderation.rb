@@ -16,12 +16,12 @@ module Snoo
     # Distinguish a thing
     #
     # @param (see #approve)
-    # @param how [yes, no, admin, special] Determines how to distinguish something. Only works for the permissions you have.
+    # @param how [yes, no, admin, special] (yes) Determines how to distinguish something. Only works for the permissions you have.
     # @return (see #clear_sessions)
-    def distinguish id, how
+    def distinguish id, how = "yes"
       logged_in?
       hows = %w{yes no admin special}
-      raise ArgumentError, "how should be one of #{hows * ', '}, is #{how}" if hows.include?(how)
+      raise ArgumentError, "how should be one of #{hows * ', '}, is #{how}" unless hows.include?(how)
       post('/api/distinguish', body: {id: id, how: how, uh: @modhash})
     end
 
@@ -50,7 +50,7 @@ module Snoo
     # @param (see #approve)
     # @param spam [true, false] Mark this removal as a spam removal (and train the spamfilter)
     # @return (see #clear_sessions)
-    def remove id, spam
+    def remove id, spam = false
       logged_in?
       spams = [true, false]
       raise ArgumentError, "spam should be boolean, is #{spam}" unless spams.include?(spam)
