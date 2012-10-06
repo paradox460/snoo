@@ -27,7 +27,7 @@ module Snoo
     #
     # @param (see LinksComments#info)
     # @option opts [String] :subreddit The subreddit targeted. Can be psuedo-subreddits like `all` or `mod`. If blank, the front page
-    # @option opts [new, controversial, top] :page The page to view.
+    # @option opts [new, controversial, top, saved] :page The page to view.
     # @option opts [new, rising] :sort The sorting method. Only relevant on the `new` page
     # @option opts [hour, day, week, month, year] :t The timeframe. Only relevant on some pages, such as `top`. Leave empty for all time
     # @option opts [1..100] :limit The number of things to return.
@@ -35,7 +35,7 @@ module Snoo
     # @option opts [String] :before Get things *before* this thing id
     # @return (see #clear_sessions)
     def get_listing opts = {}
-      pages = %w{new controversial top}
+      pages = %w{new controversial top saved}
       sorts = %w{new rising}
       times = %w{hour day week month year}
       # Invalid Page
