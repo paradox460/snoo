@@ -123,6 +123,7 @@ module Snoo
       logged_in?
       post('/api/unmarknsfw', body: {id: id, uh: @modhash})
     end
+    alias_method :mark_sfw, :unmark_nsfw
 
     # Vote on a comment or link
     #
@@ -138,14 +139,23 @@ module Snoo
     # Upvote
     # An alias for `vote 1, id`
     #
+    def upvote id
+      vote 1, id
+    end
 
     # Downvote
     # An alias for `vote -1, id`
     #
+    def downvote id
+      vote -1, id
+    end
 
     # Sidevote (clear your vote)
     # An alias for `vote 0, id`
     #
+    def sidevote id
+      vote 0, id
+    end
 
   end
 end
