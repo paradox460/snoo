@@ -8,18 +8,20 @@ module Snoo
     #
     # @param link_id [String] The link id of the comment thread. Must always be present
     # @param (see LinksComments#info)
+    # @option opts [String] :subreddit The subreddit to fetch the comments of
+    # @option opts [String] :link_id The link to get the comments of
     # @option opts [String] :comment_id The parent comment of a thread.
     # @option opts [Fixnum] :context The context of the thread, that is, how far above the `comment_id` to return
     # @option opts [Fixnum] :limit (100) The total number of comments to return. If you have gold this can include the whole thread, but is buggy. Recommend no more than 1000
     # @option opts [Fixnum] :depth How deep to render a comment thread.
     # @option opts [old, new, hot, top, controversial, best] :sort The sort used.
     # @return (see #clear_sessions)
-    def get_comments link_id, opts = {}
+    def get_comments opts = {}
       sorts = %w{old new hot top controversial best}
       raise ArgumentError, "sort cannot be #{sort}" unless sorts.include?(opts[:sort]) or opts[:sort].nil?
       query = { limit: 100 }
       query.merge! opts
-      url = "/comments/%s%s.json" % [link_id, ('/' + opts[:comment_id] if opts[:comment_id])]
+      url = "%s/comments/%s%s.json" % [('/r/' + opts[:subreddit] if opts[:subreddit]), opts[:link_id], ('/' + opts[:comment_id] if opts[:comment_id])]
       get(url, query: query)
     end
 
