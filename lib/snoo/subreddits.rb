@@ -238,5 +238,13 @@ module Snoo
       logged_in?
       get("/r/#{subreddit}/about/banned.json")
     end
+
+    # Accept a moderatorship
+    # 
+    # @param subreddit [String] The subreddit to accept in. You must have been invited
+    def accept_moderator subreddit
+      logged_in?
+      post('/api/accept_moderator_invite', body: {r: subreddit, uh: @modhash})
+    end
   end
 end
