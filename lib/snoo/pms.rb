@@ -54,10 +54,6 @@ module Snoo
     # @return (see #clear_sessions)
     def get_messages where = "inbox", opts = {},
       bools = [true, false]
-      wheres = %w{inbox unread sent}
-      raise ArgumentError, "where must be #{wheres * ', '}, is #{where}" unless wheres.include?(where)
-      raise ArgumentError, "mark must be boolean, is #{opts[:mark]}" unless bools.include?(opts[:mark]) or opts[:mark].nil?
-      raise ArgumentError, "limit must be 1..100, is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
 
       query = {
         mark: false
