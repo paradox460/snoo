@@ -23,6 +23,14 @@ module Snoo
       post('/api/delete_sr_image', body: {r: subreddit, img_name: image_name, uh: @modhash})
     end
 
+    # Gets a hash of the subreddit settings
+    # Returns a webserver error (404) if you don't have moderator permissions on said subreddit
+    #
+    # @param subreddit [String] the subreddit to fetch data from
+    def get_subreddit_settings subreddit
+      logged_in?
+      get("/r/#{subreddit}/about/edit/.json")
+    end
     # @todo test if every param is actually required
     # Sets subreddit settings.
     #
