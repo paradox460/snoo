@@ -49,12 +49,6 @@ module Snoo
     # @return (see #clear_sessions)
     def subreddit_settings subreddit, opts = {}
       logged_in?
-      bool = [true, false]
-      raise ArgumentError, "type must be one of public, private, restricted, is #{opts[:type]}" unless %w{public private restricted}.include?(opts[:type]) or opts[:type].nil?
-      raise ArgumentError, "post_type must be one of any, link, self; is #{opts[:link_type]}" unless %w{any link self}.include?(opts[:link_type]) or opts[:link_type].nil?
-      raise ArgumentError, "allow_frontpage must be boolean" unless bool.include?(opts[:allow_top]) or opts[:allow_top].nil?
-      raise ArgumentError, "show_media must be boolean" unless bool.include?(opts[:show_media]) or opts[:show_media].nil?
-      raise ArgumentError, "adult must be boolean" unless bool.include?(opts[:over_18]) or opts[:over_18].nil?
       params = {
         type: 'public',
         link_type: 'any',
@@ -86,7 +80,6 @@ module Snoo
     # @return (see #clear_sessions)
     def subscribe subreddit, action = "sub"
       logged_in?
-      raise ArgumentError, "action must be one of sub, unsub; is #{action}" unless %w{sub unsub}.include?(action)
       post('/api/subscribe', body: {action: action, sr: subreddit, uh: @modhash})
     end
 
@@ -127,8 +120,6 @@ module Snoo
     # @return (see #clear_sessions)
     def my_reddits opts = {}
       logged_in?
-      raise ArgumentError, "condition must be one of subscriber, contributor, moderator; is #{opts[:condition]}" unless %w{subscriber contributor moderator}.include?(opts[:condition]) or opts[:condition].nil?
-      raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
       url = "/reddits/mine/%s.json" % (opts[:condition] if opts[:condition])
       opts.delete :condition
       query = opts
@@ -144,9 +135,6 @@ module Snoo
     # @option opts [String] :before Return subreddits *before* this id.
     # @return (see #clear_sessions)
     def get_reddits opts = {}
-      raise ArgumentError, "condition must be one of popular, new, banned; is #{opts[:condition]}" unless %w{popular new banned}.include?(opts[:condition]) or opts[:condition].nil?
-      raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
-
       url = "/reddits/%s.json" % (opts[:condition] if opts[:condition])
       opts.delete :condition
       query = opts
@@ -163,8 +151,6 @@ module Snoo
     # @option opts [String] :before Return subreddits *before* this id.
     # @return (see #clear_sessions)
     def search_reddits q, opts = {}
-      raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
-
       query = {q: q}
       query.merge! opts
       get('/reddits/search.json', query: query)

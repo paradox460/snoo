@@ -12,8 +12,6 @@ module Snoo
     # @return (see #clear_sessions)
     def clear_flair_templates type, subreddit
       logged_in?
-      tests = ['USER_FLAIR', 'LINK_FLAIR']
-      raise ArgumentError, 'type needs to be either USER_FLAIR or LINK_FLAIR' unless tests.include?(type)
       post('/api/clearflairtemplates', body: { flair_type: type, r: subreddit, uh: @modhash})
     end
 
@@ -47,7 +45,6 @@ module Snoo
     # @return (see #clear_sessions)
     def flair subreddit, opts = {}
       logged_in?
-      raise ArgumentError, "link or name, not both" if opts[:link] && opts[:name]
       params = {
         r: subreddit,
         uh: @modhash,
@@ -103,7 +100,6 @@ module Snoo
     # @return (see #clear_sessions)
     def get_flair_list subreddit, opts = {}
       logged_in?
-      raise ArgumentError, 'limit is too high/low' unless (1..1000).include?(opts[:limit]) or opts[:limit].nil?
       query = {
         limit: 1000,
         uh: @modhash
@@ -131,10 +127,6 @@ module Snoo
         r: subreddit
       }
       params.merge! opts
-      test = ['USER_FLAIR', 'LINK_FLAIR']
-      raise ArgumentError, 'type is either USER_FLAIR or LINK_FLAIR' unless test.include?(params[:flair_type])
-      test = [true, false]
-      raise ArgumentError, 'user_editable needs to be true or false' unless test.include?(params[:text_editable])
 
       post('/api/flairtemplate', body: params)
     end
@@ -150,7 +142,6 @@ module Snoo
     # @return (see #clear_sessions)
     def select_flair_template template_id, subreddit, opts = {}
       logged_in?
-      raise ArgumentError, 'link or user, not both' if opts[:link] && opts[:user]
       params = {
         flair_template_id: template_id,
         uh: @modhash,
@@ -167,8 +158,6 @@ module Snoo
     # @return (see #clear_sessions)
     def flair_toggle enabled, subreddit
       logged_in?
-      test = [true, false]
-      raise ArgumentError, 'enabled must be boolean' unless test.include?(enabled)
       post('/api/setflairenabled', body: {flair_enabled: enabled, uh: @modhash, r: subreddit})
     end
 

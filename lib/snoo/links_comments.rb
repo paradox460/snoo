@@ -52,7 +52,6 @@ module Snoo
     # @option opts [Fixnum] :limit The number of things to return. Go too high and the API will ignore you
     # @return (see #clear_sessions)
     def info opts = {}
-      raise ArgumentError, 'url or id, not both' if opts[:id] && opts[:url]
       query = { limit: 100 }
       query.merge! opts
       get('/api/info.json', query: query)
@@ -95,7 +94,6 @@ module Snoo
     # @return (see #clear_sessions)
     def submit title, subreddit, opts = {}
       logged_in?
-      raise ArgumentError, 'url or text, not both' if opts[:url] && opts[:text]
       post = {
         title: title,
         sr: subreddit,
@@ -132,7 +130,6 @@ module Snoo
     # @return (see #clear_sessions)
     def vote direction, id
       logged_in?
-      raise ArgumentError, "direction needs to be one of -1, 0, or 1 (was #{direction}" unless (-1..1).include?(direction)
       post('/api/vote', body: {id: id, dir: direction, uh: @modhash})
     end
 

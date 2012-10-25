@@ -17,8 +17,6 @@ module Snoo
     # @option opts [old, new, hot, top, controversial, best] :sort The sort used.
     # @return (see #clear_sessions)
     def get_comments opts = {}
-      sorts = %w{old new hot top controversial best}
-      raise ArgumentError, "sort cannot be #{sort}" unless sorts.include?(opts[:sort]) or opts[:sort].nil?
       query = { limit: 100 }
       query.merge! opts
       url = "%s/comments/%s%s.json" % [('/r/' + opts[:subreddit] if opts[:subreddit]), opts[:link_id], ('/' + opts[:comment_id] if opts[:comment_id])]
@@ -37,20 +35,6 @@ module Snoo
     # @option opts [String] :before Get things *before* this thing id
     # @return (see #clear_sessions)
     def get_listing opts = {}
-      pages = %w{new controversial top saved}
-      sorts = %w{new rising}
-      times = %w{hour day week month year}
-      # Invalid Page
-      raise ArgumentError, "page must be #{pages * ', '}, is #{opts[:page]}" unless pages.include?(opts[:page]) or opts[:page].nil?
-      # Invalid Sort
-      raise ArgumentError, "sort must be one of #{sorts * ', '}, is #{opts[:sort]}" unless sorts.include?(opts[:sort]) or opts[:sort].nil?
-      # Sort on useless page
-      raise ArgumentError, "sort can only be used on page = 'new'" if opts[:page] != 'new' && opts[:sort]
-      # Invalid time
-      raise ArgumentError, "time can only be one of #{times * ', '}, is #{opts[:time]}" unless times.include?(opts[:time]) or opts[:time].nil?
-      # Invalid limit
-      raise ArgumentError, "limit cannot be outside 1..100, is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
-
       # Build the basic url
       url = "%s/%s.json" % [('/r/' + opts[:subreddit] if opts[:subreddit] ), (opts[:page] if opts[:page])]
       # Delete subreddit and page from the hash, they dont belong in the query
