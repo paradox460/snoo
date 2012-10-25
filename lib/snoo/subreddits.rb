@@ -76,7 +76,7 @@ module Snoo
     # @return (see #clear_sessions)
     def set_stylesheet stylesheet, subreddit
       logged_in?
-      post('/api/subreddit_stylesheet', body: {op: "save", stylesheet_contents: stylesheet, uh: @modhash})
+      post('/api/subreddit_stylesheet', body: {op: 'save', r: subreddit, stylesheet_contents: stylesheet, uh: @modhash})
     end
 
     # Subscribe to a subreddit
