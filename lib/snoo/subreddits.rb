@@ -163,7 +163,7 @@ module Snoo
     # @param (see #delete_header)
     # @return (see #clear_sessions)
     def add_moderator container, user, subreddit
-      friend_wrapper api_container = container, api_name = user, api_subreddit = subreddit, api_type = "moderator"
+      friend_wrapper container: container, name: user, r: subreddit, type: "moderator"
     end
 
     # Add a contributor to the subreddit
@@ -171,7 +171,7 @@ module Snoo
     # @param (see #add_moderator)
     # @return (see #clear_sessions)
     def add_contributor container, user, subreddit
-      friend_wrapper api_container = container, api_name = user, api_subreddit = subreddit, api_type = "contributor"
+      friend_wrapper container: container, name: user, r: subreddit, type: "contributor"
     end
 
     # Ban a user from a subreddit
@@ -179,7 +179,7 @@ module Snoo
     # @param (see #add_moderator)
     # @return (see #clear_sessions)
     def ban_user container, user, subreddit
-      friend_wrapper api_container = container, api_name = user, api_subreddit = subreddit, api_type ="banned"
+      friend_wrapper container: container, name: user, r: subreddit, type: "banned"
     end
 
     # Remove a moderator from a subreddit
@@ -187,24 +187,24 @@ module Snoo
     # @param id [String] The user id
     # @param (see #add_moderator)
     # @return (see #clear_sessions)
-    def remove_moderator id, container, user, subreddit
-      unfriend_wrapper api_id = id, api_container = container, api_name = user, api_subreddit = subreddit, api_type = "moderator"
+    def remove_moderator container, user, subreddit
+      unfriend_wrapper container: container, name: user, r: subreddit, type: "moderator"
     end
 
     # Remove a contributor from a subreddit
     #
     # @param (see #remove_moderator)
     # @return (see #clear_sessions)
-    def remove_contributor id, container, user, subreddit
-      unfriend_wrapper api_id = id, api_container = container, api_name = user, api_subreddit = subreddit, api_type = "contributor"
+    def remove_contributor container, user, subreddit
+      unfriend_wrapper container: container, name: user, r: subreddit, type: "contributor"
     end
 
     # Unban a user from a subreddit
     #
     # @param (see #remove_moderator)
     # @return (see #clear_sessions)
-    def unban_user id, container, user, subreddit
-      unfriend_wrapper api_id = id, api_container = container, api_name = user, api_subreddit = subreddit, api_type = "banned"
+    def unban_user container, user, subreddit
+      unfriend_wrapper container: container, name: user, r: subreddit, type: "banned"
     end
 
     # List moderators of a subreddit
@@ -234,7 +234,7 @@ module Snoo
     end
 
     # Accept a moderatorship
-    # 
+    #
     # @param subreddit [String] The subreddit to accept in. You must have been invited
     def accept_moderator subreddit
       logged_in?
