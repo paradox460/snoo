@@ -22,17 +22,30 @@ module Snoo
 
     # Creates a new instance of Snoo.
     #
-    # Please change the useragent if you write your own program.
+    # As of 0.1.0.pre.4, you can auth or log-in via initializers, saving you from having to run the log-in or auth command seperately.
+    # Simply pass username-password options, OR modhash-cookie options (you cannot do both)
     #
-    # @param url [String] url The base url of reddit.
-    # @param useragent [String] The User-Agent this bot will use.
-    def initialize( url = "http://www.reddit.com", useragent = "Snoo ruby reddit api wrapper v#{VERSION}" )
-      @baseurl = url
-      self.class.base_uri url
-      @headers = {'User-Agent' => useragent }
+    # @param opts [Hash] A hash of options
+    # @option opts [String] :url The base url of the reddit instance to use. Only change this if you have a private reddit
+    # @option opts [String] :useragent The useragent the bot uses. Please change this if you write your own complex bot
+    # @option opts [String] :username The username the bot will log in as
+    # @option opts [String] :password The password the bot will log in with
+    # @option opts [String] :modhash The modhash the bot will auth with
+    # @option opts [String] :cookies The cookie string the bot will auth with
+    def initialize( opts = {} )
+      options = {url: "http://www.reddit.com", useragent: "Snoo ruby reddit api wrapper v#{VERSION}" }.merge opts
+      @baseurl = options[:url]
+      self.class.base_uri options[:url]
+      @headers = {'User-Agent' => options[:useragent] }
       self.class.headers @headers
       @cookies = nil
       @modhash = nil
+
+      if !(options[:username].nil? && options[:password].nil?)
+        self.log_in options[:username], options[:password]
+      elsif !(options[:modhash].nil? && options[:cookies].nil?)
+        self.auth options[:modhash], options[:cookies]
+      end
     end
   end
 end
