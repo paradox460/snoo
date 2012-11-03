@@ -43,8 +43,6 @@ module Snoo
 
       if !(options[:username].nil? && options[:password].nil?)
         self.log_in options[:username], options[:password]
-      elsif !(options[:modhash].nil? && options[:cookies].nil?)
-        self.auth options[:modhash], options[:cookies]
       end
     end
   end
