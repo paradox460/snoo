@@ -52,9 +52,7 @@ module Snoo
     # @option opts [String] :before Get all comments *before* this id
     # @option opts [String] :after Get all comments *after* this
     # @return (see #clear_sessions)
-    def get_messages where = "inbox", opts = {},
-      bools = [true, false]
-
+    def get_messages where = "inbox", opts = {}
       query = {
         mark: false
       }
