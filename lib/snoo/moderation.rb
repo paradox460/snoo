@@ -80,17 +80,16 @@ module Snoo
         last_date:  Time.parse(data[-1].children[0].child['datetime']),
       }
       data.each do |tr|
-
         processed[:data] << {
           fullname:     tr['data-fullname'],
           time:         Time.parse(tr.children[0].child['datetime']),
           author:       tr.children[1].child.content,
           action:       tr.children[2].child['class'].split[1],
           description:  tr.children[3].content,
-          href:         tr.children[3].css('a')[0]['href']
+          href:         tr.children[3].css('a').count == 0 ? nil : tr.children[3].css('a')[0]['href']
         }
       end
-        return processed
+      return processed
     end
 
     # Get the modqueue, or a subset of it (dear god)
