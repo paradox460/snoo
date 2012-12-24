@@ -47,9 +47,6 @@ module Snoo
     # @option opts [1..100] :limit Number of results to return
     # @return (see #clear_sessions)
     def get_user_listing username, opts = {}
-      raise ArgumentError, "type is invalid" unless %w{overview submitted commented liked disliked hidden saved}.include?(opts[:type]) or opts[:type].nil?
-      raise ArgumentError, "sort is invalid" unless %w{new hot top controversial}.include?(opts[:sort]) or opts[:type].nil?
-      raise ArgumentError, "limit must be within 1..100; is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
       opts[:type] = 'overview' if opts[:type].nil?
       url = "/user/%s%s.json" % [username, ('/' + opts[:type] if opts[:type] != 'overview')]
       opts.delete :type

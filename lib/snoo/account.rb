@@ -49,7 +49,7 @@ module Snoo
     # @return (see #log_in)
     def clear_sessions password
       logged_in?
-      clear = post('/api/clear_sessions', body: { curpass: password, dest: @baseurl, uh: @modhash })
+      clear = post('/api/clear_sessions', body: { curpass: password, dest: @baseurl, uh: @modhash, api_type: 'json' })
       set_cookies clear.headers['set-cookie']
       return clear
     end
@@ -67,7 +67,8 @@ module Snoo
         delete_message: reason,
         passwd: password,
         uh: @modhash,
-        user: @username
+        user: @username,
+        api_type: 'json'
         })
       return delete
     end
@@ -93,7 +94,8 @@ module Snoo
         newpass: newPass,
         uh: @modhash,
         verify: true,
-        verpass: newPass
+        verpass: newPass,
+        api_type: 'json'
         }
       params[:email] = email if email
       update = post('/api/update', body: params )

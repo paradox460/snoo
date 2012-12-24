@@ -11,7 +11,7 @@ module Snoo
     # @return (see #clear_sessions)
     def comment text, id
       logged_in?
-      post('/api/comment', body: { text: text, thing_id: id, uh: @modhash})
+      post('/api/comment', body: { text: text, thing_id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Deletes a thing from the site
@@ -20,7 +20,7 @@ module Snoo
     # @return (see #clear_sessions)
     def delete id
       logged_in?
-      post('/api/del', body: { id: id, uh: @modhash })
+      post('/api/del', body: { id: id, uh: @modhash, api_type: 'json' })
     end
 
     # Edits a thing.
@@ -30,7 +30,7 @@ module Snoo
     # @return (see #clear_sessions)
     def edit text, id
       logged_in?
-      post('/api/editusertext', body: {text: text, thing_id: id, uh: @modhash})
+      post('/api/editusertext', body: {text: text, thing_id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Hides a thing
@@ -39,7 +39,7 @@ module Snoo
     # @return (see #clear_sessions)
     def hide id
       logged_in?
-      post('/api/hide', body: {id: id, uh: @modhash})
+      post('/api/hide', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Get a listing of things which have the provided URL.
@@ -52,7 +52,6 @@ module Snoo
     # @option opts [Fixnum] :limit The number of things to return. Go too high and the API will ignore you
     # @return (see #clear_sessions)
     def info opts = {}
-      raise ArgumentError, 'url or id, not both' if opts[:id] && opts[:url]
       query = { limit: 100 }
       query.merge! opts
       get('/api/info.json', query: query)
@@ -64,7 +63,7 @@ module Snoo
     # @return (see #clear_sessions)
     def mark_nsfw id
       logged_in?
-      post('/api/marknsfw', body: {id: id, uh: @modhash})
+      post('/api/marknsfw', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Reports a comment or link
@@ -73,7 +72,7 @@ module Snoo
     # @reutrn (see #comment)
     def report id
       logged_in?
-      post('/api/report', body: {id: id, uh: @modhash})
+      post('/api/report', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Saves a link
@@ -82,7 +81,7 @@ module Snoo
     # @return (see #clear_sessions)
     def save id
       logged_in?
-      post('/api/save', body: { id: id, uh: @modhash})
+      post('/api/save', body: { id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Submit a link or self post
@@ -95,12 +94,12 @@ module Snoo
     # @return (see #clear_sessions)
     def submit title, subreddit, opts = {}
       logged_in?
-      raise ArgumentError, 'url or text, not both' if opts[:url] && opts[:text]
       post = {
         title: title,
         sr: subreddit,
         uh: @modhash,
-        kind: (opts[:url] ? "link" : "self")
+        kind: (opts[:url] ? "link" : "self"),
+        api_type: 'json'
       }
       post.merge! opts
       post('/api/submit', body: post)
@@ -112,7 +111,7 @@ module Snoo
     # @return (see #clear_sessions)
     def unhide id
       logged_in?
-      post('/api/unhide', body: {id: id, uh: @modhash})
+      post('/api/unhide', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Un-mark NSFW a thing.
@@ -121,8 +120,9 @@ module Snoo
     # @return (see #clear_sessions)
     def unmark_nsfw id
       logged_in?
-      post('/api/unmarknsfw', body: {id: id, uh: @modhash})
+      post('/api/unmarknsfw', body: {id: id, uh: @modhash, api_type: 'json'})
     end
+    alias_method :mark_sfw, :unmark_nsfw
 
     # Vote on a comment or link
     #
@@ -131,21 +131,29 @@ module Snoo
     # @return (see #clear_sessions)
     def vote direction, id
       logged_in?
-      raise ArgumentError, "direction needs to be one of -1, 0, or 1 (was #{direction}" unless (-1..1).include?(direction)
-      post('/api/vote', body: {id: id, dir: direction, uh: @modhash})
+      post('/api/vote', body: {id: id, dir: direction, uh: @modhash, api_type: 'json'})
     end
 
     # Upvote
     # An alias for `vote 1, id`
     #
+    def upvote id
+      vote 1, id
+    end
 
     # Downvote
     # An alias for `vote -1, id`
     #
+    def downvote id
+      vote -1, id
+    end
 
     # Sidevote (clear your vote)
     # An alias for `vote 0, id`
     #
+    def sidevote id
+      vote 0, id
+    end
 
   end
 end

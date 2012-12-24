@@ -10,19 +10,18 @@ module Snoo
     # @return (see #clear_sessions)
     def approve id
       logged_in?
-      post('/api/approve', body: {id: id, uh: @modhash})
+      post('/api/approve', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Distinguish a thing
     #
     # @param (see #approve)
-    # @param how [yes, no, admin, special] Determines how to distinguish something. Only works for the permissions you have.
+    # @param how [yes, no, admin, special] (yes) Determines how to distinguish something. Only works for the permissions you have.
     # @return (see #clear_sessions)
-    def distinguish id, how
+    def distinguish id, how = "yes"
       logged_in?
       hows = %w{yes no admin special}
-      raise ArgumentError, "how should be one of #{hows * ', '}, is #{how}" if hows.include?(how)
-      post('/api/distinguish', body: {id: id, how: how, uh: @modhash})
+      post('/api/distinguish', body: {id: id, how: how, uh: @modhash, api_type: 'json'})
     end
 
     # Removes you from a subreddits list of contributors
@@ -32,7 +31,7 @@ module Snoo
     # @return (see #clear_sessions)
     def leave_contributor id
       logged_in?
-      post('/api/leavecontributor', body: {id: id, uh: @modhash})
+      post('/api/leavecontributor', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Removes you from a subreddits moderators
@@ -42,7 +41,7 @@ module Snoo
     # @return (see #clear_sessions)
     def leave_moderator id
       logged_in?
-      post('/api/leavemoderator', body: {id: id, uh: @modhash})
+      post('/api/leavemoderator', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Removes a thing
@@ -50,11 +49,9 @@ module Snoo
     # @param (see #approve)
     # @param spam [true, false] Mark this removal as a spam removal (and train the spamfilter)
     # @return (see #clear_sessions)
-    def remove id, spam
+    def remove id, spam = false
       logged_in?
-      spams = [true, false]
-      raise ArgumentError, "spam should be boolean, is #{spam}" unless spams.include?(spam)
-      post('/api/remove', body: {id: id, spam: spam, uh: @modhash})
+      post('/api/remove', body: {id: id, spam: spam, uh: @modhash, api_type: 'json'})
     end
 
     # Gets a moderation log
@@ -80,19 +77,19 @@ module Snoo
         first:      data[0]['data-fullname'],
         first_date: Time.parse(data[0].children[0].child['datetime']),
         last:       data[-1]['data-fullname'],
-        last_date:  Time.parse(data[-1].children[0].child['datetime'])
+        last_date:  Time.parse(data[-1].children[0].child['datetime']),
       }
       data.each do |tr|
-
         processed[:data] << {
           fullname:     tr['data-fullname'],
           time:         Time.parse(tr.children[0].child['datetime']),
           author:       tr.children[1].child.content,
           action:       tr.children[2].child['class'].split[1],
-          description:  tr.children[3].content
+          description:  tr.children[3].content,
+          href:         tr.children[3].css('a').count == 0 ? nil : tr.children[3].css('a')[0]['href']
         }
       end
-        return processed
+      return processed
     end
 
     # Get the modqueue, or a subset of it (dear god)

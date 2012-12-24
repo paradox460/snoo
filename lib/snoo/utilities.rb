@@ -36,38 +36,32 @@ module Snoo
       end
 
       # Posts to '/api/friend'. This method exists because there are tons of things that use this
+      # See http://www.reddit.com/dev/api#POST_api_friend for details
       #
-      # @param api_type [friend, moderator, contributor, banned] Type of action to use. All but friend target subreddits
-      # @param api_container [String] Thing ID, either subreddit (t5_) or user adding friend (t2_)
-      # @param api_name [String] Username to add
-      # @param api_note [String] Note to leave. Requires reddit gold
-      # @param api_subreddit [String] Subreddit name
+      # @param opts [Hash] an options hash
+      # @option opts [String] :type The type of action to add.
+      # @option opts [String] :container The id of the containing user/object/thing
+      # @options opt [String] :note The reddit gold user node
+      # @option opts [String] :name The name of a reddit user
       # @return [HTTParty::Response] The response object.
-      def friend_wrapper api_type, api_container = nil, api_name = nil, api_note = nil, api_subreddit = nil
+      def friend_wrapper opts = {}
         logged_in?
-        params = {type: api_type, uh: @modhash}
-        params[:container] = api_container if api_container
-        params[:name] = api_name if api_name
-        params[:note] = api_note if api_note
-        params[:r] = api_subreddit if api_subreddit
+        params = {uh: @modhash, api_type: 'json'}
+        params.merge! opts
         post('/api/friend', body: params)
       end
 
       # Posts to '/api/unfriend'. This method exists because there are a ton of things that use this.
       #
-      # @param api_type [friend, enemy, moderator, contributor, banned] Type of removal
-      # @param api_container [String] Thing ID, either subreddit (t5_) or user adding friend (t2_)
-      # @param api_name [String] User name
-      # @param api_id [String] User ID of user being removed
-      # @param api_subreddit [String] Subreddit name
+      # @param opts [Hash] an options hash
+      # @option opts [String] :type The type of action to add.
+      # @option opts [String] :container The id of the containing user/object/thing
+      # @option opts [String] :name The name of a reddit user
       # @return (see #friend_wrapper)
-      def unfriend_wrapper api_type, api_container = nil, api_name = nil, api_id = nil, api_subreddit = nil
+      def unfriend_wrapper opts = {}
         logged_in?
-        params = { type: api_type, uh: @modhash}
-        params[:container] = api_container if api_container
-        params[:name] = api_name if api_name
-        params[:id] = api_id if api_id
-        params[:r] = api_subreddit if api_subreddit
+        params = { uh: @modhash, api_type: 'json'}
+        params.merge! opts
         post('/api/unfriend', body: params)
       end
   end

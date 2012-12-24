@@ -10,7 +10,7 @@ module Snoo
     # @return (see #clear_sessions)
     def block_pm id
       logged_in?
-      post('/api/block', body: {id: id, uh: @modhash})
+      post('/api/block', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Send a private message
@@ -22,7 +22,7 @@ module Snoo
     # @return (see #clear_sessions)
     def send_pm to, subject, text
       logged_in?
-      post('/api/compose.json', body: {to: to, subject: subject, text: text, uh: @modhash})
+      post('/api/compose.json', body: {to: to, subject: subject, text: text, uh: @modhash, api_type: 'json'})
     end
 
     # Mark a PM as read
@@ -31,7 +31,7 @@ module Snoo
     # @return (see #clear_sessions)
     def mark_read id
       logged_in?
-      post('/api/read_message', body: {id: id, uh: @modhash})
+      post('/api/read_message', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Mark a PM as unread
@@ -40,7 +40,7 @@ module Snoo
     # @return (see #clear_sessions)
     def mark_unread id
       logged_in?
-      post('/api/unread_message', body: {id: id, uh: @modhash})
+      post('/api/unread_message', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Gets a listing of PMs
@@ -52,13 +52,7 @@ module Snoo
     # @option opts [String] :before Get all comments *before* this id
     # @option opts [String] :after Get all comments *after* this
     # @return (see #clear_sessions)
-    def get_messages where = "inbox", opts = {},
-      bools = [true, false]
-      wheres = %w{inbox unread sent}
-      raise ArgumentError, "where must be #{wheres * ', '}, is #{where}" unless wheres.include?(where)
-      raise ArgumentError, "mark must be boolean, is #{opts[:mark]}" unless bools.include?(opts[:mark]) or opts[:mark].nil?
-      raise ArgumentError, "limit must be 1..100, is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
-
+    def get_messages where = "inbox", opts = {}
       query = {
         mark: false
       }
