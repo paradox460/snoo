@@ -185,7 +185,6 @@ module Snoo
 
     # Remove a moderator from a subreddit
     #
-    # @param id [String] The user id
     # @param (see #add_moderator)
     # @return (see #clear_sessions)
     def remove_moderator container, user, subreddit

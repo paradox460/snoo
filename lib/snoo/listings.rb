@@ -6,7 +6,6 @@ module Snoo
 
     # Get a comment listing from the site
     #
-    # @param link_id [String] The link id of the comment thread. Must always be present
     # @param (see LinksComments#info)
     # @option opts [String] :subreddit The subreddit to fetch the comments of
     # @option opts [String] :link_id The link to get the comments of

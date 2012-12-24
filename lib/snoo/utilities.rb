@@ -41,7 +41,7 @@ module Snoo
       # @param opts [Hash] an options hash
       # @option opts [String] :type The type of action to add.
       # @option opts [String] :container The id of the containing user/object/thing
-      # @options opt [String] :note The reddit gold user node
+      # @option opt [String] :note The reddit gold user node
       # @option opts [String] :name The name of a reddit user
       # @return [HTTParty::Response] The response object.
       def friend_wrapper opts = {}

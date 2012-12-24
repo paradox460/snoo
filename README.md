@@ -53,11 +53,6 @@ See the [docs](http://rubydoc.info/github/paradox460/snoo/) for more info.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## Testing
-
-1. Edit `spec/auth.rb` and fill out all the globals with a test user account and test reddit
-2. Run rspec
-
 ## License
 
 ```
