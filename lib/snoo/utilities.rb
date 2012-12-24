@@ -46,7 +46,7 @@ module Snoo
       # @return [HTTParty::Response] The response object.
       def friend_wrapper opts = {}
         logged_in?
-        params = {uh: @modhash}
+        params = {uh: @modhash, api_type: 'json'}
         params.merge! opts
         post('/api/friend', body: params)
       end
@@ -60,7 +60,7 @@ module Snoo
       # @return (see #friend_wrapper)
       def unfriend_wrapper opts = {}
         logged_in?
-        params = { uh: @modhash}
+        params = { uh: @modhash, api_type: 'json'}
         params.merge! opts
         post('/api/unfriend', body: params)
       end

@@ -10,7 +10,7 @@ module Snoo
     # @return (see #clear_sessions)
     def approve id
       logged_in?
-      post('/api/approve', body: {id: id, uh: @modhash})
+      post('/api/approve', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Distinguish a thing
@@ -21,7 +21,7 @@ module Snoo
     def distinguish id, how = "yes"
       logged_in?
       hows = %w{yes no admin special}
-      post('/api/distinguish', body: {id: id, how: how, uh: @modhash})
+      post('/api/distinguish', body: {id: id, how: how, uh: @modhash, api_type: 'json'})
     end
 
     # Removes you from a subreddits list of contributors
@@ -31,7 +31,7 @@ module Snoo
     # @return (see #clear_sessions)
     def leave_contributor id
       logged_in?
-      post('/api/leavecontributor', body: {id: id, uh: @modhash})
+      post('/api/leavecontributor', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Removes you from a subreddits moderators
@@ -41,7 +41,7 @@ module Snoo
     # @return (see #clear_sessions)
     def leave_moderator id
       logged_in?
-      post('/api/leavemoderator', body: {id: id, uh: @modhash})
+      post('/api/leavemoderator', body: {id: id, uh: @modhash, api_type: 'json'})
     end
 
     # Removes a thing
@@ -51,7 +51,7 @@ module Snoo
     # @return (see #clear_sessions)
     def remove id, spam = false
       logged_in?
-      post('/api/remove', body: {id: id, spam: spam, uh: @modhash})
+      post('/api/remove', body: {id: id, spam: spam, uh: @modhash, api_type: 'json'})
     end
 
     # Gets a moderation log

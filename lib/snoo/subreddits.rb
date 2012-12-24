@@ -10,7 +10,7 @@ module Snoo
     # @return (see #clear_sessions)
     def delete_header subreddit
       logged_in?
-      post('/api/delete_sr_header', body: {r: subreddit, uh: @modhash})
+      post('/api/delete_sr_header', body: {r: subreddit, uh: @modhash, api_type: 'json'})
     end
 
     # Deletes an image from a subreddit. This is for css, not removing posts
@@ -20,7 +20,7 @@ module Snoo
     # @return (see #clear_sessions)
     def delete_image subreddit, image_name
       logged_in?
-      post('/api/delete_sr_image', body: {r: subreddit, img_name: image_name, uh: @modhash})
+      post('/api/delete_sr_image', body: {r: subreddit, img_name: image_name, uh: @modhash, api_type: 'json'})
     end
 
     # Gets a hash of the subreddit settings
@@ -58,6 +58,7 @@ module Snoo
         allow_top: true,
         show_media: true,
         over_18: false,
+        api_type: 'json'
       }
       params.merge! opts
       post('/api/site_admin', body: params)
@@ -70,7 +71,7 @@ module Snoo
     # @return (see #clear_sessions)
     def set_stylesheet stylesheet, subreddit
       logged_in?
-      post('/api/subreddit_stylesheet', body: {op: 'save', r: subreddit, stylesheet_contents: stylesheet, uh: @modhash})
+      post('/api/subreddit_stylesheet', body: {op: 'save', r: subreddit, stylesheet_contents: stylesheet, uh: @modhash, api_type: 'json'})
     end
 
     # Subscribe to a subreddit
@@ -80,7 +81,7 @@ module Snoo
     # @return (see #clear_sessions)
     def subscribe subreddit, action = "sub"
       logged_in?
-      post('/api/subscribe', body: {action: action, sr: subreddit, uh: @modhash})
+      post('/api/subscribe', body: {action: action, sr: subreddit, uh: @modhash, api_type: 'json'})
     end
 
     # Unsubscribe from a subreddit
@@ -238,7 +239,7 @@ module Snoo
     # @param subreddit [String] The subreddit to accept in. You must have been invited
     def accept_moderator subreddit
       logged_in?
-      post('/api/accept_moderator_invite', body: {r: subreddit, uh: @modhash})
+      post('/api/accept_moderator_invite', body: {r: subreddit, uh: @modhash, api_type: 'json'})
     end
   end
 end

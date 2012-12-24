@@ -12,7 +12,7 @@ module Snoo
     # @return (see #clear_sessions)
     def clear_flair_templates type, subreddit
       logged_in?
-      post('/api/clearflairtemplates', body: { flair_type: type, r: subreddit, uh: @modhash})
+      post('/api/clearflairtemplates', body: { flair_type: type, r: subreddit, uh: @modhash, api_type: 'json'})
     end
 
     # Deletes a user's flair
@@ -22,7 +22,7 @@ module Snoo
     # @return (see #clear_sessions)
     def delete_user_flair user, subreddit
       logged_in?
-      post('/api/deleteflair', body: {name: user, r: subreddit, uh: @modhash})
+      post('/api/deleteflair', body: {name: user, r: subreddit, uh: @modhash, api_type: 'json'})
     end
 
     # Deletes a flair template by ID.
@@ -31,7 +31,7 @@ module Snoo
     # @param subreddit [String] The subreddit targeted.
     def delete_flair_template id, subreddit
       logged_in?
-      post('/api/deleteflairtemplate', body: {flair_template_id: id, r: subreddit, uh: @modhash})
+      post('/api/deleteflairtemplate', body: {flair_template_id: id, r: subreddit, uh: @modhash, api_type: 'json'})
     end
 
     # Sets flair on a thing, currently supports links and users. Must specify **either** link *or* user, **not** both
@@ -48,6 +48,7 @@ module Snoo
       params = {
         r: subreddit,
         uh: @modhash,
+        api_type: 'json'
       }
       params.merge! opts
 
@@ -73,7 +74,8 @@ module Snoo
         link_flair_position: 'right',
         link_flair_self_assign_enabled: false,
         uh: @modhash,
-        r: subreddit
+        r: subreddit,
+        api_type: 'json'
       }
       options.merge! opts
 
@@ -124,7 +126,8 @@ module Snoo
         flair_type: 'USER_FLAIR',
         text_editable: false,
         uh: @modhash,
-        r: subreddit
+        r: subreddit,
+        api_type: 'json'
       }
       params.merge! opts
 
@@ -145,7 +148,8 @@ module Snoo
       params = {
         flair_template_id: template_id,
         uh: @modhash,
-        r: subreddit
+        r: subreddit,
+        api_type: 'json'
       }
       params.merge! opts
       post('/api/selectflair', body: params)
@@ -158,12 +162,12 @@ module Snoo
     # @return (see #clear_sessions)
     def flair_toggle enabled, subreddit
       logged_in?
-      post('/api/setflairenabled', body: {flair_enabled: enabled, uh: @modhash, r: subreddit})
+      post('/api/setflairenabled', body: {flair_enabled: enabled, uh: @modhash, r: subreddit, api_type: 'json'})
     end
 
     # @todo implement this.
     #   it will probably require nokogiri and some trickery.
-    def flair_template_list
-    end
+    # def flair_template_list
+    # end
   end
 end
