@@ -27,7 +27,7 @@ module Snoo
 
     # Deletes a flair template by ID.
     #
-    # @param id [String] The flair template's ID to delete. Get this from {#flair_template_list}
+    # @param id [String] The flair template's ID to delete.
     # @param subreddit [String] The subreddit targeted.
     def delete_flair_template id, subreddit
       logged_in?
@@ -136,7 +136,7 @@ module Snoo
 
     # Select a flair template and apply it to a user or link
     #
-    # @param template_id [String] The template id to apply. Get this from {#flair_template_list}
+    # @param template_id [String] The template id to apply.
     # @param subreddit [String] The subreddit targeted.
     # @param (see LinksComments#info)
     # @option opts [String] :link The link id to apply to
