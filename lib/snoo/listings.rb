@@ -57,11 +57,6 @@ module Snoo
     # @option opts [cloudsearch, lucene] :syntax The search syntax.
     # @return (see #clear_sessions)
     def search query, opts = {}
-      raise ArgumentError, 'restrict_subreddit needs to be boolean' unless [true, false].include?(opts[:restrict_sr]) or opts[:restrict_sr].nil?
-      raise ArgumentError, "limit needs to be 1..100, is #{opts[:limit]}" unless (1..100).include?(opts[:limit]) or opts[:limit].nil?
-      raise ArgumentError, "sort needs to be one of relevance, new, top, is #{opts[:sort]}" unless %w{relevance new top}.include?(opts[:sort]) or opts[:sort].nil?
-      raise ArgumentError, "syntax needs to be one of cloudsearch, lucene; is #{opts[:syntax]}" if %w{cloudsearch lucene}.include?(opts[:syntax])
-
       # This supports searches with and without a subreddit
       url = "%s/search.json" % ('/r/' + opts[:subreddit] if opts[:subreddit])
 
