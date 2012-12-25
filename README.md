@@ -53,6 +53,15 @@ See the [docs](http://rubydoc.info/github/paradox460/snoo/) for more info.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+## Feed me!
+Any and all donations are graciously accepted:
+
++ [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=Paradox460&url=https://github.com/paradox460/snoo&title=Snoo&language=&tags=github&category=software)
++ [Gittip](https://www.gittip.com/paradox460/)
++ Paypal: send to paradox460@gmail.com
+
+Thanks!
+
 ## License
 
 ```
