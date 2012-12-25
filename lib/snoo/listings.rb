@@ -18,7 +18,7 @@ module Snoo
     def get_comments opts = {}
       query = { limit: 100 }
       query.merge! opts
-      url = "%s/comments/%s%s.json" % [('/r/' + opts[:subreddit] if opts[:subreddit]), opts[:link_id], ('/' + opts[:comment_id] if opts[:comment_id])]
+      url = "%s/comments/%s%s.json" % [('/r/' + opts[:subreddit] if opts[:subreddit]), opts[:link_id], ('/blah/' + opts[:comment_id] if opts[:comment_id])]
       get(url, query: query)
     end
 
