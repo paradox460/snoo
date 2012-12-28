@@ -1,6 +1,6 @@
 # Requirements
 + You must be running a 1.9x or newer version of ruby. I do not support 1.8 or older.
-+ You must have the newest version of the [snoo](https://rubygems.org/gems/snoo) rubygem installed
++ You must use bundler. `bundle install` for the various dependencies
 + You must be comfortable editing code, but if you can follow comments, you can use this script
 
 # Running the script
