@@ -16,6 +16,5 @@ doc/
 .DS_Store
 .yardoc
 _yardoc
-Gemfile.lock
 test/tmp
 pkg

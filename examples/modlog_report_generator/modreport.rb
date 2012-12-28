@@ -1,5 +1,4 @@
 require 'snoo'
-require 'pry'
 require 'csv'
 require 'highline/import'
 
