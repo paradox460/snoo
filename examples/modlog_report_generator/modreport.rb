@@ -1,5 +1,6 @@
 require 'snoo'
 require 'csv'
+require 'set'
 require 'highline/import'
 
 reddit = Snoo::Client.new
@@ -96,3 +97,38 @@ CSV.open("#{csv_prefix}_time.csv", "wb") do |csv|
   end
 end
 puts "Saved #{csv_prefix}_time.csv with time-series data"
+
+
+# Moderator activity per day
+authors = Set.new
+data.each do |i|
+  authors << i[:author]
+end
+
+authorhash = {}
+authors.to_a.each do |i|
+  authorhash[i] = 0
+end
+
+modactivity = {}
+data.each do |m|
+  modactivity[Date.parse(m[:time].utc.strftime('%Y-%m-%d'))] ||= authorhash.dup
+  modactivity[Date.parse(m[:time].utc.strftime('%Y-%m-%d'))][m[:author]] += 1
+end
+
+header = ["Date"]
+header += authors.to_a
+
+CSV.open("#{csv_prefix}_actions_over_time.csv", "wb") do |csv|
+  csv << header
+  modactivity.each do |k, v|
+    line = []
+    line << k.strftime('%Y-%m-%d')
+    v.each do |name, amount|
+      line << amount
+    end
+    csv << line
+  end
+end
+
+puts "Saved #{csv_prefix}_actions_over_time.csv with actions-over-time data"
