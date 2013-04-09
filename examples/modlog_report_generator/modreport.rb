@@ -30,7 +30,7 @@ while (data[-1][:time] > Time.parse(start_date) ) do
     puts "Got #{data[-1][:time]}"
     sleep 2
   rescue
-    binding.pry
+    puts "Error in modlog. subreddit: #{subreddit} last: #{last} modlog #{modlog}"
   end
 end
 
