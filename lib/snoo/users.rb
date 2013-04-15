@@ -53,5 +53,13 @@ module Snoo
       query = opts
       get(url, query: query)
     end
+    
+    # Get a listing of user saved posts. Some options may be restricted
+    #
+    # @param username [String] The username to target.
+    # @option opts [sort, t, username, after, before, count, limit, show, target]: More information at http://www.reddit.com/dev/api#GET_user_{username}_saved
+    def saved username, opts = {}
+      get("/user/#{username}/saved.json", query: opts)
+    end
   end
 end

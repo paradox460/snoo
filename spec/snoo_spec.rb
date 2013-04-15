@@ -150,6 +150,13 @@ describe Snoo::Client do
         listing.code.should eq 200
       end
     end
+    
+    describe "#saved" do
+      it "should get saved posts" do
+        listing = @client.saved $testuser
+        listing.code.should eq 200
+      end
+    end
   end
 
   describe "#log_out" do
