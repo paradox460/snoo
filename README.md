@@ -60,6 +60,8 @@ Any and all donations are graciously accepted:
 + [Gittip](https://www.gittip.com/paradox460/)
 + Paypal: send to paradox460@gmail.com
 
+I also would love it if you could endorse this on Coderwall: [![endorse](http://api.coderwall.com/paradox/endorsecount.png)](http://coderwall.com/paradox)
+
 Thanks!
 
 ## License

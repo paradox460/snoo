@@ -1,4 +1,7 @@
 module Snoo
   # The version string (duh)
-  VERSION = "0.1.1"
+  MAJOR = "0"
+  MINOR = "1"
+  PATCHLEVEL = "2"
+  VERSION = [MAJOR, MINOR, PATCHLEVEL].join(".")
 end

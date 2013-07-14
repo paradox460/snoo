@@ -124,6 +124,15 @@ module Snoo
     end
     alias_method :mark_sfw, :unmark_nsfw
 
+    # Un-save a thing
+    #
+    # @param (see #delete)
+    # @return (see #clear_sessions)
+    def unsave id
+      logged_in?
+      post('/api/unsave', body: {id: id, uh: @modhash, api_type: 'json'})
+    end
+
     # Vote on a comment or link
     #
     # @param direction [-1, 0, 1] The direction to vote in. -1 is a downvote, 1 is an upvote, 0 cancels any vote

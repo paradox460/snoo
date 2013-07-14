@@ -146,6 +146,7 @@ else
     end
   end
   editor_name = ENV['EDITOR']
+  raise "Unknown Editor" unless editor_name
   system "#{editor_name} #{blocking_flag_for_editor(true, editor_name)} #{start_line_syntax_for_editor(editor_name, modmessage_path, 4)}"
 
   message['message'] = File.read(modmessage_path)
