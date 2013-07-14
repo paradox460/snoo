@@ -35,7 +35,7 @@ module Snoo
     # Logs out of a reddit account. This is usually uneeded, you can just log_in as a new account to replace the current one.
     # This just nils the cookies and modhash
     def log_out
-      set_cookies nil
+      set_cookies ""
       @modhash = nil
       @userid = nil
       @username = nil
