@@ -84,6 +84,16 @@ module Snoo
       post('/api/save', body: { id: id, uh: @modhash, api_type: 'json'})
     end
 
+    # Sets a link as a subreddit's sticky. Currently, this only works on self posts.
+    #
+    # @param (see #delete)
+    # @param state [Boolean] Whether we're setting or unsetting this sticky
+    # @return (see #clear_sessions)
+    def set_subreddit_sticky id, state = true
+      logged_in?
+      post('/api/set_subreddit_sticky', body: {id: id, state: !!state, uh: @modhash, api_type: 'json'})
+    end
+
     # Submit a link or self post
     #
     # @param title [String] Title of the post
