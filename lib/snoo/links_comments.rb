@@ -91,7 +91,7 @@ module Snoo
     # @return (see #clear_sessions)
     def set_subreddit_sticky id, state = true
       logged_in?
-      post('/api/set_subreddit_sticky', body: {id: id, state: state ? 'True' : 'False', uh: @modhash, api_type: 'json'})
+      post('/api/set_subreddit_sticky', body: {id: id, state: !!state, uh: @modhash, api_type: 'json'})
     end
 
     # Submit a link or self post
