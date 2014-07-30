@@ -13,7 +13,7 @@ module Snoo
       login = post("/api/login", :body => {user: username, passwd: password, api_type: 'json'})
       errors = login['json']['errors']
       raise errors[0][1] unless errors.size == 0
-      set_cookies login.headers['set-cookie']
+      set_cookies "reddit_session=#{login['json']['data']['cookie']}; #{login.headers['set-cookie']}"
       @modhash = login['json']['data']['modhash']
       @username = username
       @userid = 't2_' + get('/api/me.json')['data']['id']
