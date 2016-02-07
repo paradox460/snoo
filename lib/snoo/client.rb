@@ -16,7 +16,7 @@ module Snoo
     consume '/api/v1/me/prefs',
             as: :update_prefs,
          using: :patch
-    consume '/api/v1/me/trophies', as: :trophies
+    consume '/api/v1/me/trophies', as: :my_trophies
 
     # Captcha
     consume '/api/needs_captcha',
@@ -136,146 +136,372 @@ module Snoo
     consume '/api/vote',
             as: :vote,
          using: :post
-    # TODO: all below
-    # listings
-    #       + /by_id/names
-    #       + /comments/article
-    #       + /controversial
-    #       + /duplicates/article
-    #       + /hot
-    #       + /new
-    #       + /random
-    #       + /related/article
-    #       + /top
-    #       + /sort
+    # Listings
+    consume '/by_id/:names', as: :by_id
+    consume '/r/:subreddit/comments/:article',
+            as: :comments,
+        params: { optional: %i(comment context depth limit showedits showmore sort sr_detail) }
+    consume '/duplicates/:article',
+            as: :duplicates,
+        params: { optional: %i(after before count limit name show sr_detail) } # TODO: Genericize into listing type
+    consume 'related/:article',
+            as: :related
+    consume '/r/:subreddit/hot',
+            as: :hot,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/new',
+            as: :new_posts,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/random',
+            as: :random,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/top',
+            as: :top,
+        params: { optional: %i(t after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/controversial',
+            as: :controversial,
+        params: { optional: %i(t after before count limit show sr_detail) } # TODO: Genericize into listing type
     # live threads
-    #       + /api/live/create
-    #       + /api/live/thread/accept_contributor_invite
-    #       + /api/live/thread/close_thread
-    #       + /api/live/thread/delete_update
-    #       + /api/live/thread/edit
-    #       + /api/live/thread/invite_contributor
-    #       + /api/live/thread/leave_contributor
-    #       + /api/live/thread/report
-    #       + /api/live/thread/rm_contributor
-    #       + /api/live/thread/rm_contributor_invite
-    #       + /api/live/thread/set_contributor_permissions
-    #       + /api/live/thread/strike_update
-    #       + /api/live/thread/update
-    #       + /live/thread
-    #       + /live/thread/about
-    #       + /live/thread/contributors
-    #       + /live/thread/discussions
+    consume '/api/live/create',
+            as: :new_live_thread,
+         using: :post
+    consume '/api/live/:thread/accept_contributor_invite',
+            as: :accept_live_thread_invite,
+         using: :post
+    consume '/api/live/:thread/close_thread',
+            as: :close_live_thread,
+         using: :post
+    consume '/api/live/:thread/delete_update',
+            as: :delete_live_thread_update,
+         using: :post
+    consume '/api/live/:thread/edit',
+            as: :edit_live_thread,
+         using: :post
+    consume '/api/live/:thread/invite_contributor',
+            as: :live_thread_invite,
+         using: :post
+    consume '/api/live/:thread/leave_contributor',
+            as: :live_thread_leave,
+         using: :post
+    consume '/api/live/:thread/report',
+            as: :live_thread_report,
+         using: :post
+    consume '/api/live/:thread/rm_contributor',
+            as: :live_thread_remove_contributor,
+         using: :post
+    consume '/api/live/:thread/rm_contributor_invite',
+            as: :live_thread_remove_contributor_invite,
+         using: :post
+    consume '/api/live/:thread/set_contributor_permissions',
+            as: :live_thread_contributor_permissions,
+         using: :post
+    consume '/api/live/:thread/strike_update',
+            as: :live_thread_strike_update,
+         using: :post
+    consume '/api/live/:thread/update',
+            as: :live_thread_update,
+         using: :post
+    consume '/live/:thread',
+            as: :live_thread
+    consume '/live/:thread/about',
+            as: :live_thread_about
+    consume '/live/:thread/contributors',
+            as: :live_thread_contributors
+    consume '/live/:thread/discussions',
+            as: :live_thread_discussions
     # private messages
-    #       + /api/block
-    #       + /api/collapse_message
-    #       + /api/compose
-    #       + /api/read_all_messages
-    #       + /api/read_message
-    #       + /api/unblock_subreddit
-    #       + /api/uncollapse_message
-    #       + /api/unread_message
-    #       + /message/inbox
-    #       + /message/sent
-    #       + /message/unread
-    #       + /message/where
+    consume '/api/block',
+            as: :block,
+         using: :post
+    consume '/api/collapse_message',
+            as: :collapse_message,
+         using: :post
+    consume '/api/compose',
+            as: :compose,
+         using: :post
+    consume '/api/read_all_messages',
+            as: :read_all_messages,
+         using: :post
+    consume '/api/read_message',
+            as: :read_message,
+         using: :post
+    consume '/api/unblock_subreddit',
+            as: :unblock_subreddit,
+         using: :post
+    consume '/api/uncollapse_message',
+            as: :uncollapse_message,
+         using: :post
+    consume '/api/unread_message',
+            as: :unread_message,
+         using: :post
+    consume '/message/inbox',
+            as: :inbox,
+        params: { optional: %i(mark mid after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/message/sent',
+            as: :sent,
+        params: { optional: %i(mark mid after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/message/unread',
+            as: :unread,
+        params: { optional: %i(mark mid after before count limit show sr_detail) } # TODO: Genericize into listing type
     # misc
-    #       + /api/v1/scopes
+    consume '/api/v1/scopes',
+            as: :scopes,
+        params: { optional: :scopes }
     # moderation
-    #       + /about/edited
-    #       + /about/log
-    #       + /about/modqueue
-    #       + /about/reports
-    #       + /about/spam
-    #       + /about/unmoderated
-    #       + /about/location
-    #       + /api/accept_moderator_invite
-    #       + /api/approve
-    #       + /api/distinguish
-    #       + /api/ignore_reports
-    #       + /api/leavecontributor
-    #       + /api/leavemoderator
-    #       + /api/mute_message_author
-    #       + /api/remove
-    #       + /api/unignore_reports
-    #       + /api/unmute_message_author
-    #       + /stylesheet
+    consume '/r/:subreddit/about/log',
+            as: :modlog,
+        params: { optional: %i(after before count limit mod show sr_detail type) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/edited',
+            as: :edited,
+        params: { optional: %i(after before count limit location only show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/modqueue',
+            as: :modqueue,
+        params: { optional: %i(after before count limit location only show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/reports',
+            as: :reports,
+        params: { optional: %i(after before count limit location only show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/spam',
+            as: :spam,
+        params: { optional: %i(after before count limit location only show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/unmoderated',
+            as: :unmoderated,
+        params: { optional: %i(after before count limit location only show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/api/accept_moderator_invite',
+            as: :accept_moderator_invite,
+         using: :post
+    consume '/r/:subreddit/api/approve',
+            as: :approve,
+         using: :post
+    consume '/r/:subreddit/api/distinguish',
+            as: :distinguish,
+         using: :post
+    consume '/r/:subreddit/api/ignore_reports',
+            as: :ignore_reports,
+         using: :post
+    consume '/r/:subreddit/api/leavecontributor',
+            as: :leave_contributor,
+         using: :post
+    consume '/r/:subreddit/api/leavemoderator',
+            as: :leave_moderator,
+         using: :post
+    consume '/r/:subreddit/api/mute_message_author',
+            as: :mute_message_author,
+         using: :post
+    consume '/r/:subreddit/api/remove',
+            as: :remove,
+         using: :post
+    consume '/r/:subreddit/api/unignore_reports',
+            as: :unignore_reports,
+         using: :post
+    consume '/r/:subreddit/api/unmute_message_author',
+            as: :unmute_message_author,
+         using: :post
     # multis
-    #       + /api/filter/filterpath
-    #       + /api/filter/filterpath/r/srname
-    #       + /api/multi/copy
-    #       + /api/multi/mine
-    #       + /api/multi/rename
-    #       + /api/multi/user/username
-    #       + /api/multi/multipath
-    #       + /api/multi/multipath/description
-    #       + /api/multi/multipath/r/srname
+    consume '/api/multi/mine',
+            as: :my_multis
+    consume '/api/multi/user/:username',
+            as: :user_multis
+    consume '/api/multi/:multipath/description',
+            as: :multi_description
+    consume '/api/multi/:multipath/description',
+            as: :update_multi_description,
+         using: :put
+    consume '/api/multi/:multipath/r/:srname',
+            as: :multi_subreddit_info
+    consume '/api/multi/:multipath/r/:srname',
+            as: :delete_subreddit_from_multi,
+         using: :delete
+    consume '/api/multi/:multipath/r/:srname',
+            as: :add_subreddit_to_multi,
+         using: :put
+    consume '/api/multi/:multipath',
+            as: :multi,
+        params: { optional: :expand_srs }
+    consume '/api/multi/:multipath',
+            as: :new_multi,
+         using: :post
+    consume '/api/multi/:multipath',
+            as: :update_multi,
+         using: :put
+    consume '/api/multi/:multipath',
+            as: :delete_multi,
+         using: :delete
+    consume '/api/multi/copy',
+            as: :copy_multi,
+         using: :post
+    consume '/api/multi/rename',
+            as: :rename_multi,
+         using: :post
     # search
-    #       + /search
+    consume '/r/:subreddit/search',
+            as: :search,
+        params: { required: :q, optional: %i(after before count include_facets limit restrict_sr show sort sr_detail syntax t type) } # TODO: Genericize into listing type
     # subreddits
-    #       + /about/banned
-    #       + /about/contributors
-    #       + /about/moderators
-    #       + /about/muted
-    #       + /about/wikibanned
-    #       + /about/wikicontributors
-    #       + /about/where
-    #       + /api/delete_sr_banner
-    #       + /api/delete_sr_header
-    #       + /api/delete_sr_icon
-    #       + /api/delete_sr_img
-    #       + /api/recommend/sr/srnames
-    #       + /api/search_reddit_names
-    #       + /api/site_admin
-    #       + /api/submit_text
-    #       + /api/subreddit_stylesheet
-    #       + /api/subreddits_by_topic
-    #       + /api/subscribe
-    #       + /api/upload_sr_img
-    #       + /r/subreddit/about
-    #       + /r/subreddit/about/edit
-    #       + /rules
-    #       + /sidebar
-    #       + /sticky
-    #       + /subreddits/default
-    #       + /subreddits/gold
-    #       + /subreddits/mine/contributor
-    #       + /subreddits/mine/moderator
-    #       + /subreddits/mine/subscriber
-    #       + /subreddits/mine/where
-    #       + /subreddits/new
-    #       + /subreddits/popular
-    #       + /subreddits/search
-    #       + /subreddits/where
+    consume '/r/:subreddit/about/banned',
+            as: :banned,
+        params: { optional: %i(after before count limit show sr_detail user) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/contributors',
+            as: :contributors,
+        params: { optional: %i(after before count limit show sr_detail user) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/moderators',
+            as: :moderators,
+        params: { optional: %i(after before count limit show sr_detail user) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/muted',
+            as: :muted,
+        params: { optional: %i(after before count limit show sr_detail user) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/wikibanned',
+            as: :wikibanned,
+        params: { optional: %i(after before count limit show sr_detail user) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/about/wikicontributors',
+            as: :wikicontributors,
+        params: { optional: %i(after before count limit show sr_detail user) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/api/delete_sr_banner',
+            as: :delete_banner,
+         using: :post
+    consume '/r/:subreddit/api/delete_sr_header',
+            as: :delete_header,
+         using: :post
+    alias delete_logo delete_header
+    consume '/r/:subreddit/api/delete_sr_icon',
+            as: :delete_icon,
+         using: :post
+    consume '/r/:subreddit/api/delete_sr_img',
+            as: :delete_image,
+         using: :post
+    consume '/api/recommend/sr/:srnames',
+            as: :recommended_reddits,
+        params: { optional: :omit }
+    consume '/api/search_reddit_names',
+            as: :search_reddit_names,
+         using: :post
+    consume '/api/site_admin',
+            as: :new_subreddit,
+         using: :post
+    consume '/r/:subreddit/api/submit_text',
+            as: :submission_text
+    consume '/r/:subreddit/api/subreddit_stylesheet',
+            as: :update_stylesheet,
+         using: :post
+    consume '/api/subreddits_by_topic',
+            as: :subreddits_by_topic,
+        params: { required: :query }
+    consume '/api/subscribe',
+            as: :subscribe,
+         using: :post
+    consume '/r/:subreddit/api/upload_sr_img',
+            as: :new_image,
+         using: :post
+    consume '/r/:subreddit/about',
+            as: :subreddit_info
+    consume '/r/:subreddit/about/edit',
+            as: :subreddit_settings
+    consume '/r/:subreddit/rules',
+            as: :subreddit_rules
+    consume '/r/:subreddit/sidebar',
+            as: :subreddit_sidebar
+    consume '/r/:subreddit/sticky',
+            as: :subreddit_sticky
+    consume '/subreddits/mine/subscriber',
+            as: :my_subscribed,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/subreddits/mine/contributor',
+            as: :my_approved,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/subreddits/mine/moderator',
+            as: :my_moderated,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/subreddits/search',
+            as: :subreddit_search,
+        params: { required: :q, optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/subreddits/default',
+            as: :default_subreddits,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/subreddits/gold',
+            as: :gold_subreddits,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/subreddits/new',
+            as: :new_subreddits,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
+    consume '/subreddits/popular',
+            as: :popular_subreddits,
+        params: { optional: %i(after before count limit show sr_detail) } # TODO: Genericize into listing type
     # users
-    #       + /api/friend
-    #       + /api/setpermissions
-    #       + /api/unfriend
-    #       + /api/username_available
-    #       + /api/v1/me/friends/username
-    #       + /api/v1/user/username/trophies
-    #       + /user/username/about
-    #       + /user/username/comments
-    #       + /user/username/downvoted
-    #       + /user/username/gilded
-    #       + /user/username/hidden
-    #       + /user/username/overview
-    #       + /user/username/saved
-    #       + /user/username/submitted
-    #       + /user/username/upvoted
-    #       + /user/username/where
+    consume '/api/setpermissions',
+            as: :update_permissions,
+         using: :post
+    consume '/api/username_available',
+            as: :username_available?
+    consume '/api/v1/me/friends/:username',
+            as: :friend_info
+    consume '/api/v1/me/friends/:username',
+            as: :friend,
+         using: :put
+    alias update_friend friend
+    consume '/api/v1/me/friends/:username',
+            as: :delete_friend,
+         using: :delete
+    consume '/api/v1/user/:username/trophies',
+            as: :trophies
+    consume '/user/:username/about',
+            as: :about_user
+    consume '/user/:username/overview',
+            as: :user,
+        params: { optional: %i(show sort t after before count limit sr_detail) } # TODO: Genericize into listing type
+    consume '/user/:username/comments',
+            as: :user_comments,
+        params: { optional: %i(show sort t after before count limit sr_detail) } # TODO: Genericize into listing type
+    consume '/user/:username/gilded',
+            as: :user_guilded,
+        params: { optional: %i(show sort t after before count limit sr_detail) } # TODO: Genericize into listing type
+    consume '/user/:username/hidden',
+            as: :user_hidden,
+        params: { optional: %i(show sort t after before count limit sr_detail) } # TODO: Genericize into listing type
+    consume '/user/:username/saved',
+            as: :user_saved,
+        params: { optional: %i(show sort t after before count limit sr_detail) } # TODO: Genericize into listing type
+    consume '/user/:username/submitted',
+            as: :user_submitted,
+        params: { optional: %i(show sort t after before count limit sr_detail) } # TODO: Genericize into listing type
+    consume '/user/:username/upvoted',
+            as: :user_upvoted,
+        params: { optional: %i(show sort t after before count limit sr_detail) } # TODO: Genericize into listing type
+    consume '/user/:username/downvoted',
+            as: :user_downvoted,
+        params: { optional: %i(show sort t after before count limit sr_detail) } # TODO: Genericize into listing type
     # wiki
-    #       + /api/wiki/alloweditor/add
-    #       + /api/wiki/alloweditor/del
-    #       + /api/wiki/alloweditor/act
-    #       + /api/wiki/edit
-    #       + /api/wiki/hide
-    #       + /api/wiki/revert
-    #       + /wiki/discussions/page
-    #       + /wiki/pages
-    #       + /wiki/revisions
-    #       + /wiki/revisions/page
-    #       + /wiki/settings/page
-    #       + /wiki/page
+    consume '/r/:subreddit/api/wiki/alloweditor/add',
+            as: :add_wiki_editor_to_page,
+         using: :post
+    consume '/r/:subreddit/api/wiki/alloweditor/del',
+            as: :remove_wiki_editor_from_page,
+         using: :post
+    consume '/r/:subreddit/api/wiki/edit',
+            as: :edit_wiki_page,
+         using: :post
+    consume '/r/:subreddit/api/wiki/hide',
+            as: :hide_wiki_page,
+         using: :post
+    consume '/r/:subreddit/api/wiki/revert',
+            as: :revert_wiki_page,
+         using: :post
+    consume '/r/:subreddit/wiki/discussions/:page',
+            as: :wiki_page_discussions,
+        params: { optional: %i(after before count limit page show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/wiki/pages',
+            as: :wiki_pages
+    consume '/r/:subreddit/wiki/revisions',
+            as: :recent_wiki_revisions,
+        params: { optional: %i(after before count limit page show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/wiki/revisions/:page',
+            as: :recent_wiki_page_revisions,
+        params: { optional: %i(after before count limit page show sr_detail) } # TODO: Genericize into listing type
+    consume '/r/:subreddit/wiki/settings/:page',
+            as: :wiki_page_settings
+    consume '/r/:subreddit/wiki/settings/:page',
+            as: :update_wiki_page_settings,
+         using: :post
+    consume '/r/:subreddit/wiki/:page',
+            as: :wiki_page,
+        params: { optional: %i(v v2) }
   end
 end
