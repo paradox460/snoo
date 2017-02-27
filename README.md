@@ -1,5 +1,7 @@
 # Snoo
 
+[![API Testing](https://img.shields.io/badge/API%20Test-RapidAPI-blue.svg)](https://rapidapi.com/package/Reddit/functions?utm_source=RedditGithub&utm_medium=button&utm_content=Vender_GitHub)
+
 Snoo is a *simple* wrapper for the reddit.com api. Its designed to provide an interface as close to the official api as possible, while freeing you from the problems of dealing with json, webserver requests, and session/cookie management.
 
 Unlike other API wrappers, this one doesn't make use of complicated objects or classes, once you instantiate it once, you are good to go.
